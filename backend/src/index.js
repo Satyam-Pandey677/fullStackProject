@@ -2,6 +2,7 @@ import express from "express";
 import { dbConnect } from "./config/dbConnect.js";
 import userRouter from "./routes/userRouter.js";
 import {createClient} from "redis"
+
 const app = express();
 const port = process.env.PORT
 

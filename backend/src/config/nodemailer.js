@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer"
 
 
-export const sendMail = (email, subject,content) => {
+export const sendMail = (message) => {
 
     const trasporter = nodemailer.createTransport({
         host:"smtp.gmail.com",
@@ -12,11 +12,5 @@ export const sendMail = (email, subject,content) => {
         }
     })
 
-    trasporter.sendMail({
-        from:"Bid Here",
-        to:email,
-        subject:`${subject}`,
-        text:`${content}`
-
-    })
+    trasporter.sendMail(message)
 }
