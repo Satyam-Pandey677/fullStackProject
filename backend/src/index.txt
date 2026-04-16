@@ -1,0 +1,60 @@
+import express from "express";
+import http from "http";
+import {Server} from "socket.io"
+import cors from "cors"
+
+const app = express();
+const server = http.createServer(app);
+
+app.use(cors())
+
+const io = new Server(server,{
+    cors:{
+        origin:"http://localhost:5173"
+    }
+})
+let endTimer = null
+let interval = null
+io.on("connection", (socket) => {
+    
+    console.log("User Connected", socket.id);
+
+    socket.on("message", (data) => {
+        console.log("message", data);
+    })
+
+    socket.emit("reply", "hello from server");
+
+    socket.on("startTimer", (second) => {
+        endTimer = Date.now() + second * 1000;
+
+        io.emit("countdown", endTimer - Date.now());
+        if(!endTimer) return;
+
+        interval = setInterval(() => {
+
+            const remaining = endTimer - Date.now();
+
+
+            if(remaining <= 0){
+                io.emit("ended");
+                endTimer = null
+                clearInterval(interval);
+                interval = null;
+                return
+            }
+            io.emit("countdown", remaining);
+    },1000)
+    })
+    
+
+    socket.on("disconnect", () =>{
+        console.log("user discconnected");
+        clearInterval(interval)
+    })
+})
+
+
+server.listen(5000,() => {
+    console.log("Server running on port 5000")
+})
