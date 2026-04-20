@@ -7,8 +7,6 @@ import { sendMail } from "../config/nodemailer.js";
 export const sendOtp = async(req, res) => {
     const {email} = req.body;
 
-    console.log(email)
-
     if(!email){
         res.status(400)
         throw new Error("Email is Required")
@@ -18,7 +16,7 @@ export const sendOtp = async(req, res) => {
     const rateLimit = await client.get(rateLimitKey);
 
     if(rateLimit){
-        res.status(429)
+        return res.status(429)
         .json({
             message:"too many requiest. Please wait before requisting any new otp"
         })
@@ -28,15 +26,15 @@ export const sendOtp = async(req, res) => {
 
     const otpKey = `otp: ${email}`
 
-    await client.set("otp",otp,{
+    await client.set(otpKey,otp,{
         EX:300,
     });
 
-    await clint.set(rateLimitKey,"true",{
+    await client.set(rateLimitKey,"true",{
         EX:60
     })
 
-    await client.set("rate-limit");
+    await client.set("rate-limit","true");
 
     const message = {
         from:"BiddIT",
@@ -45,7 +43,7 @@ export const sendOtp = async(req, res) => {
         text:`Your OTP is ${otp}`
     }
 
-    sendMail(mesage)
+    sendMail(message)
 
     res.status(200)
     .json({

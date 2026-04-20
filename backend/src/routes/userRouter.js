@@ -5,6 +5,7 @@ const router = Router();
 
 router.route("/send-otp").post(sendOtp)
 router.route("/hello").get((req, res) =>{
+    console.log("hello")
     res.send("hello")
 })
 

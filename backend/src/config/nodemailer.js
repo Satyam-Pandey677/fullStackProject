@@ -8,7 +8,7 @@ export const sendMail = (message) => {
         port:465,
         auth:{
             user:process.env.USER,
-            pass:process.env.PASS
+            pass:process.env.PASSWORD
         }
     })
 
