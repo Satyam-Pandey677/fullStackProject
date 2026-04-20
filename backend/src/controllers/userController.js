@@ -12,7 +12,7 @@ export const sendOtp = async(req, res) => {
         throw new Error("Email is Required")
     }
 
-    const rateLimitKey = `otp: ${email}`;
+    const rateLimitKey = `ratelimit:${email}`;
     const rateLimit = await client.get(rateLimitKey);
 
     if(rateLimit){
@@ -24,7 +24,7 @@ export const sendOtp = async(req, res) => {
 
     const otp = Math.floor(100000 + Math.random()*900000).toString();
 
-    const otpKey = `otp: ${email}`
+    const otpKey = `otp:${email}`
 
     await client.set(otpKey,otp,{
         EX:300,
@@ -48,6 +48,30 @@ export const sendOtp = async(req, res) => {
     res.status(200)
     .json({
         mesage:"opt send to your email"
+    })
+}
+
+export  const verifyOtp = async(req, res) => {
+    const {otp} = req.body;
+    const {email} = req.query;
+
+    console.log(otp)
+    console.log(email)
+
+
+    const storedOTp = await client.get(`otp:${email}`);
+    console.log(storedOTp)
+
+    if(otp != storedOTp){
+        return res.status(400)
+        .json({
+            message:"OTP not valid"
+        })
+    }
+
+    return res.status(200)
+    .json({
+        message:"user verified successfully"
     })
 }
 
