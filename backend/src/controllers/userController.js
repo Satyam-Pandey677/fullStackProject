@@ -1,8 +1,16 @@
 
 import { client } from "../index.js";
 import { sendMail } from "../config/nodemailer.js";
+import jwt from "jsonwebtoken"
 
 
+const getToken = (user) => {
+    const token = jwt.sign({user}, process.env.JWT_SECRET, {
+        expiresIn:process.env.JWT_EXPIRE
+    })
+
+    return token
+}
 
 export const sendOtp = async(req, res) => {
     const {email} = req.body;
@@ -69,9 +77,20 @@ export  const verifyOtp = async(req, res) => {
         })
     }
 
+    const user = await User.find({email});
+    
+    if(!user){
+        const name = email.slice(0,8);
+        user = await User.create({name,email});
+    }
+
+    const token = getToken(user);
+
     return res.status(200)
     .json({
-        message:"user verified successfully"
+        message:"user verified successfully",
+        user,
+        token
     })
 }
 
