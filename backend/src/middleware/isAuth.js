@@ -15,7 +15,7 @@ export const isAuth = async(req, res,next) => {
         }
     }
 
-    f(!token){
+    if(!token){
         res.status(401);
         throw new Error("NOt authorized, no token")
     }

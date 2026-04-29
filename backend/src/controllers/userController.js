@@ -2,6 +2,7 @@
 import { client } from "../index.js";
 import { sendMail } from "../config/nodemailer.js";
 import jwt from "jsonwebtoken"
+import { USER } from "../models/UserModel.js";
 
 
 const getToken = (user) => {
@@ -77,11 +78,11 @@ export  const verifyOtp = async(req, res) => {
         })
     }
 
-    const user = await User.find({email});
-    
-    if(!user){
+    let user = await USER.findOne({email});
+    console.log(user)
+    if(user == null){
         const name = email.slice(0,8);
-        user = await User.create({name,email});
+        user = await USER.create({name,email});
     }
 
     const token = getToken(user);
@@ -92,6 +93,14 @@ export  const verifyOtp = async(req, res) => {
         user,
         token
     })
+}
+
+export const profile = async( req, res) => {
+    try {
+        return req.user
+    } catch (error) {
+        throw new Error("User not login",error)
+    }
 }
 
 
