@@ -8,7 +8,7 @@ const port = process.env.PORT
 
 app.use(express.json());
 
-// dbConnect()
+dbConnect()
 export const client = createClient({
     url:"redis://127.0.0.1:6379"
 })

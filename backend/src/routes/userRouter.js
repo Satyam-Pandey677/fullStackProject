@@ -5,5 +5,6 @@ const router = Router();
 
 router.route("/send-otp").post(sendOtp)
 router.route("/verify").post(verifyOtp)
+router.route("/me")
 
 export default router;
