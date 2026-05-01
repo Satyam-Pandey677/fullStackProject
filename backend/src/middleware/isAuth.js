@@ -1,13 +1,17 @@
 import jwt from "jsonwebtoken"
+import { USER } from "../models/UserModel.js";
 
 export const isAuth = async(req, res,next) => {
 
     let token;
     if(req.headers.authorization && req.headers.authorization.startsWith("Bearer")){
         try {
-            const header = req.headers.authorization.split(" ")[1]
+            token  = req.headers.authorization.split(" ")[1]
             const decode = jwt.verify(token, process.env.JWT_SECRET)
-            req.user = await User.findById(decode.id)
+            console.log(decode.user._id)
+            req.user = await USER.findById(decode.user._id)
+
+            console.log(req.user)
             next()
         } catch (error) {
              res.status(400)

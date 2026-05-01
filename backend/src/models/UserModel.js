@@ -10,6 +10,9 @@ const userSchema= new Schema({
         lowercase:true,
         unique:true,
         trim:true
+    },
+    phone:{
+        type:Number
     }
 },{
     timestamps:true

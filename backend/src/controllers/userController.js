@@ -6,7 +6,7 @@ import { USER } from "../models/UserModel.js";
 
 
 const getToken = (user) => {
-    const token = jwt.sign({user}, process.env.JWT_SECRET, {
+    const token = jwt.sign({id:user._id}, process.env.JWT_SECRET, {
         expiresIn:process.env.JWT_EXPIRE
     })
 
@@ -97,9 +97,49 @@ export  const verifyOtp = async(req, res) => {
 
 export const profile = async( req, res) => {
     try {
-        return req.user
+
+        const user = req.user;
+
+        if(!user){
+            res.status(400)
+            throw new Error("User Not authorized")
+        }
+        return res.status(200)
+        .json({
+            message:"Your Profile",
+            user
+        })
+        .json()
     } catch (error) {
         throw new Error("User not login",error)
+    }
+}
+
+export const updateProfile = async (req, res) => {
+    try {
+        const {name, phone}  = req.body;   
+        const {id} = req.user._id;
+
+        if(!id){
+            throw new Error("Please send Id")
+        }
+
+        const user = await USER.findByIdAndUpdate(id,{
+            name,
+            phone
+        })
+
+        if(!user){
+            res.status(404)
+            throw new Error("User not found")
+        }
+
+        return res.status(200).json({
+            message:"profile updated",
+            user
+        })
+    } catch (error) {
+        throw new Error("Something went wrong: ", error)
     }
 }
 
