@@ -64,13 +64,8 @@ export  const verifyOtp = async(req, res) => {
     const {otp} = req.body;
     const {email} = req.query;
 
-    console.log(otp)
-    console.log(email)
-
 
     const storedOTp = await client.get(`otp:${email}`);
-    console.log(storedOTp)
-
     if(otp != storedOTp){
         return res.status(400)
         .json({
@@ -118,15 +113,17 @@ export const profile = async( req, res) => {
 export const updateProfile = async (req, res) => {
     try {
         const {name, phone}  = req.body;   
-        const {id} = req.user._id;
+        const id = req.user._id;
+
+        console.log(name, phone)
 
         if(!id){
             throw new Error("Please send Id")
         }
 
         const user = await USER.findByIdAndUpdate(id,{
-            name,
-            phone
+            name:name,
+            phone:phone
         })
 
         if(!user){
@@ -140,6 +137,26 @@ export const updateProfile = async (req, res) => {
         })
     } catch (error) {
         throw new Error("Something went wrong: ", error)
+    }
+}
+
+export const getAllUser  =async(req, res) => {
+    try {
+        const users = await USER.find({});
+
+        if(!users) {
+            res.status(400)
+            throw new Error("Users not found ", error)
+        }
+
+        return res.status(200)
+        .json({
+            message:"All Users Fetched",
+            users
+        })
+    } catch (error) {
+        res.status(500)
+        throw new Error("Something went wrong", error)
     }
 }
 
