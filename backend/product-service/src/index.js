@@ -1,7 +1,10 @@
-import Express from "express"
+import express from "express"
 
-const app = Express();
+const app = express();
 const port = process.env.PORT
+
+app.use(express.json());
+
 
 
 app.listen(port, () => {
