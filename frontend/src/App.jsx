@@ -29,7 +29,6 @@ function App() {
 
   const start = () =>{
     socket.emit("startTimer",20);
-    console.log("clicked")
   }
 
   const safeTimer = Math.max(0, time) 
