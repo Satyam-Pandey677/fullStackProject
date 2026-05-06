@@ -17,6 +17,9 @@ export const startSendMSGnConsumer = async() => {
 
         const channel = await connection.createChannel();
 
+
+        // This OTP mail service
+
         const queueName = "send-otp";
 
         await channel.assertQueue(queueName, {durable:true});
@@ -52,6 +55,8 @@ export const startSendMSGnConsumer = async() => {
             }
         })
 
+        // This is Content Message service
+
         const msgQueueName = "welcome-queue"
         await channel.assertQueue(msgQueueName, {durable:true});
 
@@ -61,8 +66,6 @@ export const startSendMSGnConsumer = async() => {
             try {
                 const {to, subject, body} = JSON.parse(msg.content.toString());
 
-                console.log(process.env.PASSWORD)
-                console.log(process.env.USER)
                 const transporter = nodemailer.createTransport({
                     host:"smtp.gmail.com",
                     port:465,
