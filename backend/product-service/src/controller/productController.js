@@ -1,3 +1,4 @@
+import { PRODUCT } from "../model/productModel.js";
 import { asyncHandler } from "../utils/asyncHandler.js"
 
 const createProduct = asyncHandler(async(req, res) =>{
@@ -31,7 +32,7 @@ const createProduct = asyncHandler(async(req, res) =>{
 
     const endTime = new Date(Date.now() + duration);
 
-    const product = await Product.create({
+    const product = await PRODUCT.create({
         name,
         description,
         images:images_urls.map((image) =>({
@@ -43,6 +44,29 @@ const createProduct = asyncHandler(async(req, res) =>{
         endTime,
         owner:user._id,
         category
+    })
+})
+
+const deleteProduct = asyncHandler(async(req, res) =>{
+    const {id} = req.params;
+    const existedProduct = await PRODUCT.findById(id);
+
+    if(!existedProduct){
+        res.status(404)
+        throw new Error("Product Not Exist")
+    }
+
+    if(existedProduct.owner.toString() != req.user._id.toString()){
+        res.status(403)
+        throw new Error("User Not Authorized")
+    }
+
+    const deletedProduct =  await PRODUCT.findByIdAndDelete(id);
+
+    res.status(200)
+    .json({
+        message:"Product deleted successfully",
+        deletedProduct
     })
 })
 
