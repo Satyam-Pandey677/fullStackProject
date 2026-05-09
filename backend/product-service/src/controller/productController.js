@@ -45,6 +45,26 @@ const createProduct = asyncHandler(async(req, res) =>{
         owner:user._id,
         category
     })
+
+    if(!product){
+        res.status(500)
+        throw new Error("Something Went wrong")
+    }
+
+    const message = {
+            to:req.user.email,
+            subject:"Thank For Post Product ",
+            body:`Thank you ${req.user.email} for add new item in BidIT platform and your product Id is ${product.id}`
+            }
+    
+    await publishToQueue("welcome-queue", message)
+
+
+    return res.status(200)
+    .json({
+        message:"Product created Successfully",
+        product
+    })
 })
 
 const deleteProduct = asyncHandler(async(req, res) =>{
@@ -67,6 +87,23 @@ const deleteProduct = asyncHandler(async(req, res) =>{
     .json({
         message:"Product deleted successfully",
         deletedProduct
+    })
+})
+
+const GetAllProduct  =asyncHandler(async(req, res) => {
+    const page = parseInt(req.query.page)||1;
+    const limit = 10;
+    const skip = (page - 1) * limit 
+
+    const products = await PRODUCT.find()
+    .skip(skip)
+    .limit(limit)
+    .exec()
+
+    return res.status(200)
+    .json({
+        message:"Fetching All Products",
+        products
     })
 })
 
