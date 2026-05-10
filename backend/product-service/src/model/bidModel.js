@@ -6,7 +6,7 @@ const bidSchema = new mongoose.Schema({
         ref:"PRODUCT",
         required:true
     },
-    product:{
+    bidder:{
         type:Schema.Types.ObjectId,
         ref:"USER",
         required:true

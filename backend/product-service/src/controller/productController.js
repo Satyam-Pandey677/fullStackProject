@@ -107,6 +107,56 @@ const GetAllProduct  =asyncHandler(async(req, res) => {
     })
 })
 
+
+const getLiveProducts = asyncHandler(async(req, res) => {
+    const products = await PRODUCT.find({
+        status:"live"
+    })
+    
+    if(!products){
+        res.status(404)
+        .json({
+            message:"No Products Are Live Right Now"
+        })
+    }
+
+    res.status(200)
+    .json({
+        message:"Fetched Live Products",
+        products
+    })
+})
+
+const getMyProducts = asyncHandler(async(req, res) => {
+    const userId = req.user._id;
+
+    const products = await PRODUCT.find({
+        owner:userId
+    })
+
+    if(!products){
+        res.status(400)
+        .json({
+            message:"Something went wrong"
+        })
+    }
+
+    res.staus(200)
+    .json({
+        message:"Fetched my products",
+        products
+    })
+})
+
+const 
+
+
+
+
 export {
-    createProduct
+    createProduct,
+    deleteProduct,
+    GetAllProduct,
+    getLiveProducts,
+    getMyProducts
 }

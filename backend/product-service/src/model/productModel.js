@@ -25,7 +25,7 @@ const productSchema = new Mongoose.Schema({
         required:true
     },
     endTime:{
-        type:Number,
+        type:Date,
         required:true
     },
     status:{
