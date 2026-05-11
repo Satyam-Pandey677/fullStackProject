@@ -1,4 +1,4 @@
-import { io } from "../config/socket.js";
+import { io, startAuctionTimer } from "../config/socket.js";
 import { BID } from "../model/bidModel.js";
 import { PRODUCT } from "../model/productModel.js";
 import { asyncHandler } from "../utils/asyncHandler.js"
@@ -176,6 +176,50 @@ const getProductById = asyncHandler(async(req, res) => {
     })
 })
 
+const startAuction = asyncHandlers(async(req, res) => {
+    
+    const {id} = req.params;
+
+    if(!id){
+        return res.status(400)
+        .json({
+            message:"Id is required to start the auction"
+        })
+    }
+
+    const product = await PRODUCT.findById(id);
+
+    if(!product){
+        return res.status(404)
+        .json({
+            message:"Product not found"
+        })
+    }
+
+
+    if(product.status == "live"){
+        return res.status(400)
+        .json({
+            message:"Auction already started"
+        })
+    }
+
+    if(product.owner.toString !== req.user._id.toString()){
+        return res.status(403).json({
+            message:"You not Authorized to start Auciton"
+        })
+    }
+
+    product.status = "live";
+    product.endTime = new Date(
+        Date.now() + product.duration*1000
+    );
+
+    await product.save()
+    
+    startAuctionTimer(product._id.toString(), product.duration)
+})
+
 const placeBid = asyncHandler(async(req, res) => {
     const bidderId = req.user._id;
     const {productId} = req.params;
@@ -276,5 +320,6 @@ export {
     GetAllProduct,
     getLiveProducts,
     getMyProducts,
+    startAuction,
     placeBid
 }
