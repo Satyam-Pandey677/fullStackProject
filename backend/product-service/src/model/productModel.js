@@ -20,6 +20,11 @@ const productSchema = new Mongoose.Schema({
         type:Number,
         default:0,
     },
+
+    highestBidder = {
+        type:Schema.Types.ObjectId,
+        ref:"USER"
+    },
     duration:{
         type:Number,
         required:true
@@ -33,6 +38,7 @@ const productSchema = new Mongoose.Schema({
         enum:["pending", "live", "ended"],
         default:"pending"
     },
+
     AuctionWinner:{
         type:Schema.Types.ObjectId,
         ref:"USER"

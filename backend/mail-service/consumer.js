@@ -2,7 +2,6 @@ import amqp from "amqplib"
 import nodemailer from "nodemailer"
 
 export const startSendMSGnConsumer = async() => {
-    console.log("function started")
     try {
         const connection = await amqp.connect({
             protocol:"amqp",
@@ -11,8 +10,6 @@ export const startSendMSGnConsumer = async() => {
             username:process.env.RABBITMQ_USERNAME,
             password:process.env.RABBITMQ_PASS
         })
-
-        console.log("hello")
 
 
         const channel = await connection.createChannel();
@@ -59,8 +56,6 @@ export const startSendMSGnConsumer = async() => {
 
         const msgQueueName = "welcome-queue"
         await channel.assertQueue(msgQueueName, {durable:true});
-
-        console.log("✅ Mail service consumer started, listening for otp emails")
 
         channel.consume(msgQueueName, async(msg) => {
             try {

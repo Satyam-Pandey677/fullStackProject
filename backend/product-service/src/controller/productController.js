@@ -1,3 +1,5 @@
+import { io } from "../config/socket.js";
+import { BID } from "../model/bidModel.js";
 import { PRODUCT } from "../model/productModel.js";
 import { asyncHandler } from "../utils/asyncHandler.js"
 
@@ -148,8 +150,123 @@ const getMyProducts = asyncHandler(async(req, res) => {
     })
 })
 
-const 
+const getProductById = asyncHandler(async(req, res) => {
+    const {id} = req.params;
 
+    if(!id){
+        res.status(400)
+        .json({
+            message:"Id is required"
+        })
+    }
+
+    const product  = await PRODUCT.findById(id);
+    
+    if(!product){
+        res.status(404)
+        .json({
+            message:"Product not found"
+        })
+    }
+
+    return res.status(200)
+    .json({
+        messasge:"Fetchingg product by id",
+        product
+    })
+})
+
+const placeBid = asyncHandler(async(req, res) => {
+    const bidderId = req.user._id;
+    const {productId} = req.params;
+    const {amount} = req.body;
+
+    if(!senderId){
+        res.status(401).json({
+            message:"unauthorized"
+        });
+        return;
+    }
+
+    if(!productId){
+        res.status(400).json({
+            message:"ProductId is required"
+        })
+        return;
+    }
+
+    if(!amount){
+        res.status(400).json({
+            message:"Amound is required for bid"
+        })
+        return;
+    }
+
+
+    //product
+    const product = await PRODUCT.findById(id);
+
+    if(!product){
+        res.status(404)
+        .json({
+            message:"Product Not Found"
+        })
+        return;
+    }
+
+
+    //auction status
+    if(product.status !== "live" ){
+        return res.status(400).json({
+            message:"Auction is not live"
+        })
+    }
+
+    //Bid validation
+    if(amount <= product.currentBid){
+        res.status(400)
+        .json({
+            message:"you cant bid less then current Bid"
+        })
+        return;
+    }
+
+    //save bid;
+
+    const bid = await BID.create({
+        product:productId,
+        bidder:bidderId,
+        amount
+    })
+
+
+    //update product
+
+    product.currentBid = amount;
+    product.highestBidder = bidderId
+    await product.save();
+
+    //populate bidder
+
+    const populateBid = await BID.findById(bid._id).populate("bidder", "name email");
+
+
+    //socket Emit
+    io.to(productId).emit(
+        "bidPlaced",{
+            productId,
+            amount,
+            bidder:populateBid.bidder
+        }
+    );
+
+
+    return res.status(201).json({
+        success:trusted,
+        message:"Bid placed Successfully",
+        bid:populateBid
+    });
+});
 
 
 
@@ -158,5 +275,6 @@ export {
     deleteProduct,
     GetAllProduct,
     getLiveProducts,
-    getMyProducts
+    getMyProducts,
+    placeBid
 }
