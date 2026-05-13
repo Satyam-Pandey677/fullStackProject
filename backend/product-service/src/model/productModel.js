@@ -21,7 +21,7 @@ const productSchema = new Mongoose.Schema({
         default:0,
     },
 
-    highestBidder = {
+    highestBidder : {
         type:Schema.Types.ObjectId,
         ref:"USER"
     },
