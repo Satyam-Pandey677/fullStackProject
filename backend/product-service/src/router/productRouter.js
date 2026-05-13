@@ -1,11 +1,12 @@
 import {Router} from "express";
 import { isAuth } from "../middleware/isAuth";
 import { createProduct, deleteProduct, GetAllProduct, getLiveProducts, getMyProducts, placeBid, startAuction } from "../controller/productController.js";
+import { upload } from "../middleware/multer.js";
 
 const router = Router();
 
 
-router.route("/product/create").post(isAuth, createProduct); //Product creation Api
+router.route("/product/create").post(isAuth, upload.array("image", 4),createProduct); //Product creation Api
 router.route("/products").get(isAuth, GetAllProduct) //fetching all product through pagination
 router.route("/products/live").get(isAuth, getLiveProducts) //fetch all live auction product
 router.route("/products/:id").get(isAuth).put(isAuth).delete(isAuth,deleteProduct) //get, update, delete product by id
