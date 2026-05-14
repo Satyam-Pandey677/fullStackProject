@@ -28,7 +28,7 @@ export const upload = multer({
     }
 })
 
-const uploadOnCloudinary = async(file) => {
+export const uploadOnCloudinary = async(file) => {
     if(!file){
         console.log("Please provide file name")
         return ;

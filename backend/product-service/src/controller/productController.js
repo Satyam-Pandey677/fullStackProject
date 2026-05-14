@@ -2,6 +2,7 @@ import { io, startAuctionTimer } from "../config/socket.js";
 import { BID } from "../model/bidModel.js";
 import { PRODUCT } from "../model/productModel.js";
 import { asyncHandler } from "../utils/asyncHandler.js"
+import {uploadOnCloudinary} from "../middleware/multer.js"
 
 const createProduct = asyncHandler(async(req, res) =>{
 
@@ -18,7 +19,7 @@ const createProduct = asyncHandler(async(req, res) =>{
 
     const images = req.files;
     const images_urls = await Promise.all(
-        // images.map((image) => uploadImages(image.path))
+        images.map((image) => uploadOnCloudinary(image.path))
     )
 
     let durationInSec ;
