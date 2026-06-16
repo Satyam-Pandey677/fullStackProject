@@ -6,11 +6,10 @@ import { publishToQueue } from "../config/rabbitmq.js";
 
 
 const getToken = (user) => {
-    const token = jwt.sign({id:user._id}, process.env.JWT_SECRET, {
+    const token = jwt.sign({id:user}, process.env.JWT_SECRET, {
         expiresIn:process.env.JWT_EXPIRE
     })
-
-    return token
+    return token;
 }
 
 export const sendOtp = async(req, res) => {
