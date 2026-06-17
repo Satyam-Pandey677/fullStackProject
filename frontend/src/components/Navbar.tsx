@@ -20,7 +20,7 @@ const Navbar = () => {
 
 
    const handleClick = () => {
-        navigate("/verify")
+        navigate("/sign-in")
    }
 
   return (

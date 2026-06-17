@@ -2,8 +2,9 @@ import { useState } from 'react'
 import './App.css'
 import { Route, Router, Routes } from 'react-router-dom'
 
-import Verify from './pages/Verify'
+import SendEmail from './pages/SendEmail'
 import LandingPage from './pages/LandingPage'
+import VerfyOtp from './pages/VerfyOtp'
 
 
 function App() {
@@ -12,7 +13,8 @@ function App() {
   return (
         <Routes>
             <Route index element={<LandingPage/>}/>
-            <Route path="/verify" element={<Verify/>}/>
+            <Route path="/sign-in" element={<SendEmail/>}/>
+            <Route path="/send-otp" element={<VerfyOtp/>}/>
         </Routes>
   )
 }
