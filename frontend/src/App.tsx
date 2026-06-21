@@ -2,9 +2,11 @@ import { useState } from 'react'
 import './App.css'
 import { Route, Router, Routes } from 'react-router-dom'
 
-import SendEmail from './pages/SendEmail'
+import SendEmail from './pages/Login'
 import LandingPage from './pages/LandingPage'
-import VerfyOtp from './pages/VerfyOtp'
+import VerifyPage from './pages/Verify'
+import AuthLayout from './pages/Auth/AuthLayout'
+import ProductsPage from './pages/ProductsPage'
 
 
 function App() {
@@ -14,7 +16,10 @@ function App() {
         <Routes>
             <Route index element={<LandingPage/>}/>
             <Route path="/sign-in" element={<SendEmail/>}/>
-            <Route path="/send-otp" element={<VerfyOtp/>}/>
+            <Route path="/send-otp" element={<VerifyPage  />}/>
+            <Route element={<AuthLayout/>}>
+              <Route path='/products' element={<ProductsPage/>}/>
+            </Route>
         </Routes>
   )
 }

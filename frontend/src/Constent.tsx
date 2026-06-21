@@ -1,0 +1,1 @@
+export const USER_SERVICE = "http://localhost:5000"
