@@ -3,6 +3,7 @@ import Wrapper from '../components/Wrapper'
 import Navbar from '../components/Navbar'
 
 const LandingPage = () => {
+
   return (
     <div>
         <Wrapper>

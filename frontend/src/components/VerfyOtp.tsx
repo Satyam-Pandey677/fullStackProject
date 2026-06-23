@@ -66,6 +66,8 @@ const VerfyOtp = () => {
       setOtp(["", "", "", "", "", ""]);
       inputRef.current[0]?.focus();
       setIsAuth(true);
+
+      console.log(data)
       setUser(data.user);
       navigate("/products")
     } catch (error: any) {

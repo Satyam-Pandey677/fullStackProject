@@ -15,9 +15,14 @@ const Verify = () => {
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
+  const {user} = useAppData()
+
   //for Input auto focus when use visit the page
   useEffect(() => {
     inputRef.current?.focus();
+    if(user){
+      navigate("/products")
+    }
   },[])
 
   const handleClick=async(e:React.FormEvent<HTMLElement>):Promise<void> => {  
