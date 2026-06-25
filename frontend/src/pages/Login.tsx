@@ -4,6 +4,7 @@ import { ArrowRight, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import { useAppData } from '../context/ContextProvider';
+import { USER_SERVICE } from '../Constent';
 
 
 const Verify = () => {
@@ -38,7 +39,7 @@ const Verify = () => {
     }
 
     try {
-      const {data} = await axios.post(`/api/user/send-otp`,{
+      const {data} = await axios.post(`${USER_SERVICE}/api/user/send-otp`,{
         email,
       })
       navigate(`/send-otp?email=${email}`);

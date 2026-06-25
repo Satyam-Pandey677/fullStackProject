@@ -1,8 +1,8 @@
 import {Server} from "socket.io"
 import http from "http"
 import express from "express"
-import { PRODUCT } from "../model/productModel";
-import { BID } from "../model/bidModel";
+import { PRODUCT } from "../model/productModel.js";
+import { BID } from "../model/bidModel.js";
 
 const app = express();
 

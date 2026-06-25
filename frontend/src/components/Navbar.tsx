@@ -52,7 +52,7 @@ const Navbar = () => {
                 className="text-gray-700 font-medium text-sm hover:text-orange-500 transition-colors duration-300 relative group"
               >
                 {link.name}
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-orange-400 to-orange-600 group-hover:w-full transition-all duration-300"></span>
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-linear-to-r from-orange-400 to-orange-600 group-hover:w-full transition-all duration-300"></span>
               </Link>
             ))}
           </div>
@@ -106,7 +106,7 @@ const Navbar = () => {
                     handleClick();
                     setIsMenuOpen(false);
                   }}
-                  className="mx-4 px-6 py-2 bg-gradient-to-r from-orange-400 to-orange-600 text-white font-semibold rounded-full hover:shadow-lg transition-all duration-300"
+                  className="mx-4 px-6 py-2 bg-linear-to-r from-orange-400 to-orange-600 text-white font-semibold rounded-full hover:shadow-lg transition-all duration-300"
                 >
                   Get Start
                 </button>

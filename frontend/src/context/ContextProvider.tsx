@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState, type ReactNode }
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { USER_SERVICE } from '../Constent';
 
 
 export interface User  {
@@ -30,21 +31,17 @@ const ContextProvider = ({children}:{children: ReactNode}) => {
 
     const fetchUser = async () =>{
         const token = Cookies.get("token");
-
-        console.log(token)
         if(!token){
             setLoading(false)
             return
         }
         
         try {
-            const {data} = await axios.get("/api/user/me",{
+            const {data} = await axios.get(`${USER_SERVICE}/api/user/me`,{
                 headers:{
                     Authorization:`Bearer ${token}`
                 }
             })
-
-            console.log(data)
     
             setUser(data.user)
             setIsAuth(true);

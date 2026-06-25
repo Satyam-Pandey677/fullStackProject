@@ -7,8 +7,6 @@ const AuthLayout = () => {
 
     const {isAuth, loading}  = useAppData()
 
-    console.log(isAuth)
-
 
     if(loading) {
         return <Loading/>

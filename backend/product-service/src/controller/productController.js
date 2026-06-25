@@ -177,7 +177,7 @@ const getProductById = asyncHandler(async(req, res) => {
     })
 })
 
-const startAuction = asyncHandlers(async(req, res) => {
+const startAuction = asyncHandler(async(req, res) => {
     
     const {id} = req.params;
 

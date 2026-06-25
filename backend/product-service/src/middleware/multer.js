@@ -1,15 +1,16 @@
-import ClodinaryStorage from "multer-storage-cloudinary"
+
 import cloudinary from "../config/cloudinary.js"
 import { fileURLToPath } from "url"
+import {CloudinaryStorage} from "multer-storage-cloudinary"
 
 import multer from "multer"
 import path from "path"
 
-const storage = new ClodinaryStorage({
+const storage = new CloudinaryStorage({
     cloudinary:cloudinary,
     params:{
         folder:"auction-images",
-        allowed_formate:["jpg", "jpeg", "png", "gif", "webp"],
+        allowedFormats:["jpg", "jpeg", "png", "gif", "webp"],
     },
 })
 

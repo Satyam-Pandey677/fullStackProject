@@ -17,3 +17,4 @@ router.route("/:id/bids").get(isAuth) // fetch all bids in product
 router.route("/:id/winner").get(isAuth) // fetch winner of auction
 router.route("/my-products").get(isAuth, getMyProducts) // fetch my posted products
  
+export default router
