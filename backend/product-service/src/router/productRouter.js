@@ -6,7 +6,7 @@ import { upload } from "../middleware/multer.js";
 const router = Router();
 
 
-router.route("/create-product").post(isAuth, upload.array("image", 4),createProduct); //Product creation Api
+router.route("/create-product").post(isAuth, upload.array("images", 4),createProduct); //Product creation Api
 router.route("/all-products").get(isAuth, GetAllProduct) //fetching all product through pagination
 router.route("/live-products").get(isAuth, getLiveProducts) //fetch all live auction product
 router.route("/:id").get(isAuth).put(isAuth).delete(isAuth,deleteProduct) //get, update, delete product by id

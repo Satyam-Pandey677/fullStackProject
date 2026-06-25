@@ -3,6 +3,7 @@ import { BID } from "../model/bidModel.js";
 import { PRODUCT } from "../model/productModel.js";
 import { asyncHandler } from "../utils/asyncHandler.js"
 import {uploadOnCloudinary} from "../middleware/multer.js"
+import { publishToQueue } from "../config/rabbitmq.js";
 
 const createProduct = asyncHandler(async(req, res) =>{
 
@@ -27,20 +28,20 @@ const createProduct = asyncHandler(async(req, res) =>{
     if(durationType == "hr"){
         durationInSec = duration*60*60*1000;
     }else if(durationType == "min"){
-        duration = duration *60*1000;
+        durationInSec = duration *60*1000;
     }else{
         res.status(400);
         throw new Error("Invalid duration type")
     }
 
-    const endTime = new Date(Date.now() + duration);
+    let endTime = new Date(Date.now() + durationInSec);
 
     const product = await PRODUCT.create({
         name,
         description,
         images:images_urls.map((image) =>({
             url:image.secure_url,
-            id:image.price_id
+            id:image.public_id
         })),
         starting_price,
         duration:durationInSec,

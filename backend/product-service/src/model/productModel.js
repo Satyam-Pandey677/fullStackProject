@@ -9,7 +9,12 @@ const productSchema = new Mongoose.Schema({
         type:String
     },
     images:[{
-        type:String
+        url:{
+            type:String
+        },
+        id:{
+            type:String
+        }
     }],
     starting_price:{
         type:Number,
