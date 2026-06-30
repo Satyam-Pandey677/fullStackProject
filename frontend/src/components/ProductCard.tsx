@@ -1,25 +1,10 @@
 import { useState, useEffect } from 'react';
+import type { IProduct } from '../pages/ProductsPage';
 
 interface ProductImage {
   url: string;
   id: string;
   _id?: string;
-}
-
-interface IProduct {
-  _id: string;
-  name: string;
-  description?: string;
-  images: ProductImage[];
-  starting_price: number;
-  currentBid: number;
-  duration: number;
-  endTime: string | Date;
-  status: 'pending' | 'live' | 'ended';
-  owner: string;
-  category: string;
-  createdAt?: string;
-  updatedAt?: string;
 }
 
 interface ProductCardProps {

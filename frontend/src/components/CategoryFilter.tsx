@@ -40,9 +40,6 @@ const CategoryFilter: React.FC<{
         fetchCategories();
     },[])
 
-    console.log(categories)
-
-
   return (
     <div className="mb-8">
       <h3 className="text-lg font-semibold text-gray-800 mb-4">Categories</h3>

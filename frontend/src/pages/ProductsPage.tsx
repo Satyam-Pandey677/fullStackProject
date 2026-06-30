@@ -3,8 +3,11 @@ import SearchBar from '../components/SearchBar';
 import CategoryFilter from '../components/CategoryFilter';
 import ProductCard from '../components/ProductCard';
 import { PRODUCT_SERVICE } from '../Constent';
+import ProfileButton from '../components/ProfileButton';
+import { useAppData } from '../context/ContextProvider';
+import Cookies from 'js-cookie';
 
-interface IProduct {
+export interface IProduct {
   _id: string;
   name: string;
   description?: string;
@@ -15,7 +18,10 @@ interface IProduct {
   endTime: string | Date;
   status: 'pending' | 'live' | 'ended';
   owner: string;
-  category: string;
+  category:{
+    _id:string,
+    name:string
+  };
 }
 
 // Main Products Page Component
@@ -25,13 +31,14 @@ const ProductsPage = () => {
   const [products, setProducts] = useState<IProduct[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const {user} = useAppData()
 
   // Fetch products from API
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true)
-        const token = localStorage.getItem('token')
+        const token = Cookies.get("token")
         const response = await fetch(`${PRODUCT_SERVICE}/api/product/all-products?page=1`, {
           method: 'GET',
           headers: {
@@ -58,6 +65,8 @@ const ProductsPage = () => {
     fetchProducts()
   }, [])
 
+  console.log(products)
+
   // Filter products based on search and category
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
@@ -65,7 +74,7 @@ const ProductsPage = () => {
         .toLowerCase()
         .includes(searchValue.toLowerCase())
       const matchesCategory =
-        selectedCategory === 'All' || product.category === selectedCategory
+        selectedCategory === 'All' || product.category.name === selectedCategory
 
       return matchesSearch && matchesCategory
     })
@@ -75,13 +84,16 @@ const ProductsPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-white via-orange-50 to-white py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-10">
+        <div className="mb-10 flex justify-between">
+          <div>
           <h1 className="text-4xl font-bold text-gray-800 mb-2">
             Explore Auctions
           </h1>
           <p className="text-gray-600 text-lg">
             Find amazing items and place your bids
           </p>
+          </div>
+          {user && <ProfileButton name={user?.name} email={user?.email}/>}
         </div>
 
         {/* Search Bar */}

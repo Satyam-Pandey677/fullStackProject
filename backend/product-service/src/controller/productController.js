@@ -102,6 +102,7 @@ const GetAllProduct  =asyncHandler(async(req, res) => {
     const products = await PRODUCT.find()
     .skip(skip)
     .limit(limit)
+    .populate("category")
     .exec()
 
     return res.status(200)
