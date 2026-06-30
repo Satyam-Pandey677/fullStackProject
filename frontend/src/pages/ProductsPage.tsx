@@ -6,6 +6,7 @@ import { PRODUCT_SERVICE } from '../Constent';
 import ProfileButton from '../components/ProfileButton';
 import { useAppData } from '../context/ContextProvider';
 import Cookies from 'js-cookie';
+import { Link } from 'react-router-dom';
 
 export interface IProduct {
   _id: string;
@@ -141,7 +142,9 @@ const ProductsPage = () => {
             ) : filteredProducts.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredProducts.map((product) => (
-                  <ProductCard key={product._id} product={product} />
+                  <Link key={product._id} to={`/${product._id}`}>
+                  <ProductCard  product={product} />
+                  </Link>
                 ))}
               </div>
             ) : (

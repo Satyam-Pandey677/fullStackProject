@@ -7,6 +7,7 @@ import LandingPage from './pages/LandingPage'
 import VerifyPage from './pages/Verify'
 import AuthLayout from './pages/Auth/AuthLayout'
 import ProductsPage from './pages/ProductsPage'
+import ProductDetails from './pages/ProductDetails'
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
             <Route path="/send-otp" element={<VerifyPage  />}/>
             <Route element={<AuthLayout/>}>
               <Route path='/products' element={<ProductsPage/>}/>
+              <Route path="/:id" element={<ProductDetails/>}/>
             </Route>
         </Routes>
   )

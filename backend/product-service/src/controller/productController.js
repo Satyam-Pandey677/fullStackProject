@@ -324,5 +324,6 @@ export {
     getLiveProducts,
     getMyProducts,
     startAuction,
-    placeBid
+    placeBid,
+    getProductById
 }

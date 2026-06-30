@@ -116,7 +116,7 @@ const Navbar = () => {
         )}
       </div>
 
-      <style jsx>{`
+      <style tsx="true">{`
         @keyframes slideDown {
           from {
             opacity: 0;
