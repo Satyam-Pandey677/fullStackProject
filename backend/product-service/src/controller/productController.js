@@ -369,5 +369,6 @@ export {
     getMyProducts,
     startAuction,
     placeBid,
-    getProductById
+    getProductById,
+    endAuction
 }
