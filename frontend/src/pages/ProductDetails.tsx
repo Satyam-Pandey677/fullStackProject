@@ -1,137 +1,395 @@
-import React, { useEffect, useState } from 'react'
-import { useParams, useLocation } from 'react-router-dom'
+import { useEffect, useMemo, useState } from 'react'
+import { Link, useParams } from 'react-router-dom'
 import Cookies from 'js-cookie'
+import { PRODUCT_SERVICE } from '../Constent'
+import { useAppData } from '../context/ContextProvider'
 
-type Category = { _id: string; name: string }
-type Image = { url?: string; public_id?: string }
+interface ProductImage {
+  url: string
+  id: string
+  _id?: string
+}
 
-type Product = {
+interface IProduct {
   _id: string
   name: string
   description?: string
-  images?: Image[]
-  category?: Category
-  owner?: string
-  starting_price?: number
-  currentBid?: number
-  status?: string
-  duration?: number
-  createdAt?: string
-  endTime?: string
+  images?: ProductImage[]
+  starting_price: number
+  currentBid: number
+  duration: number
+  endTime: string | Date
+  status: 'pending' | 'live' | 'ended'
+  owner?: string | { _id?: string; name?: string; email?: string }
+  category?: {
+    _id?: string
+    name?: string
+  }
 }
 
-const formatCurrency = (n?: number) =>
-  typeof n === 'number' ? n.toLocaleString(undefined, { style: 'currency', currency: 'USD' }) : '-'
+interface IUser {
+  id?: string
+  _id?: string
+  name?: string
+  email?: string
+  isAdmin?: boolean
+}
 
-const timeRemaining = (end?: string) => {
-  if (!end) return 'N/A'
-  const diff = new Date(end).getTime() - Date.now()
+const calculateTimeLeft = (endTime: string | Date): string => {
+  const diff = new Date(endTime).getTime() - new Date().getTime()
+
   if (diff <= 0) return 'Ended'
-  const s = Math.floor(diff / 1000)
-  const m = Math.floor(s / 60)
-  const h = Math.floor(m / 60)
-  const days = Math.floor(h / 24)
-  const hh = h % 24
-  const mm = m % 60
-  return `${days ? days + 'd ' : ''}${hh}h ${mm}m`
+
+  const hours = Math.floor(diff / (1000 * 60 * 60))
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
+
+  if (hours > 0) {
+    return `${hours}h ${minutes}m`
+  }
+
+  return `${minutes}m`
 }
 
-const ProductDetails: React.FC = () => {
+const ProductDetails = () => {
   const { id } = useParams<{ id: string }>()
-  const location = useLocation()
-  const stateProduct = (location.state as any)?.product as Product | undefined
-
-  const [product, setProduct] = useState<Product | null>(stateProduct ?? null)
-  const [loading, setLoading] = useState<boolean>(!stateProduct)
+  const [product, setProduct] = useState<IProduct | null>(null)
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [activeImage, setActiveImage] = useState(0)
+  const [startingAuction, setStartingAuction] = useState(false)
+  const [endingAuction, setEndingAuction] = useState(false)
+  const [placingBid, setPlacingBid] = useState(false)
+  const [actionMessage, setActionMessage] = useState<string | null>(null)
+  const [bidAmount, setBidAmount] = useState('')
+
+  const { user } = useAppData()
+
+  
+  useEffect(() => {
+    const fetchProduct = async () => {
+      if (!id) {
+        setError('No product id provided')
+        setLoading(false)
+        return
+      }
+
+      try {
+        setLoading(true)
+        const token = Cookies.get('token')
+        const response = await fetch(`${PRODUCT_SERVICE}/api/product/${id}`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        })
+
+        if (!response.ok) {
+          throw new Error('Failed to load product details')
+        }
+
+        const data = await response.json()
+        setProduct(data?.product || null)
+        setError(null)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An unexpected error occurred')
+        setProduct(null)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchProduct()
+  }, [id])
 
   useEffect(() => {
-    if (product || !id) return
-    setLoading(true)
-    const token = Cookies.get("token")
+    if (product) {
+      const currentBase = product.currentBid > 0 ? product.currentBid : product.starting_price
+      setBidAmount(String(currentBase + 1000))
+    }
+  }, [product])
 
-    fetch(`/api/product/${id}`,{
-        headers:{
-        "Authorization": `Bearer ${token}`,
-        }
-    })
-      .then(async (res) => {
-        const text = await res.text()
-        const ct = res.headers.get('content-type') || ''
-        if (!res.ok) {
-          // include server response (HTML or text) in error for debugging
-          throw new Error(text || res.statusText)
-        }
-        if (ct.includes('application/json')) {
-          try {
-            return JSON.parse(text)
-          } catch (e) {
-            throw new Error('Invalid JSON from server')
-          }
-        }
-        // received HTML (likely index.html) or plain text
-        throw new Error('Expected JSON but received non-JSON response: ' + (text ? text.slice(0,200) : ''))
+  const timeLeft = useMemo(() => {
+    if (!product) return 'Loading...'
+    return calculateTimeLeft(product.endTime)
+  }, [product])
+
+  const statusClasses: Record<IProduct['status'], string> = {
+    pending: 'bg-yellow-500 text-white',
+    live: 'bg-green-600 text-white',
+    ended: 'bg-red-500 text-white',
+  }
+
+  const imageUrl = product?.images?.[activeImage]?.url || product?.images?.[0]?.url || 'https://via.placeholder.com/800x600?text=No+Image'
+  const isAdmin = Boolean((user as IUser | null)?.isAdmin)
+  const canBid = Boolean(user) && product?.status === 'live' && !isAdmin
+  const baseBid = product ? (product.currentBid > 0 ? product.currentBid : product.starting_price) : 0
+
+  const handleStartAuction = async () => {
+    if (!id || !isAdmin) return
+
+    try {
+      setStartingAuction(true)
+      setActionMessage(null)
+      const token = Cookies.get('token')
+      const response = await fetch(`${PRODUCT_SERVICE}/api/product/${id}/start-auction`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
       })
-      .then((data) => setProduct(data))
-      .catch((err) => setError(err.message || 'Failed to load product'))
-      .finally(() => setLoading(false))
-  }, [id, product])
 
-  console.log(product)
+      const data = await response.json()
 
-  if (loading) return <div>Loading product…</div>
-  if (error) return <div style={{ color: 'red' }}>Error: {error}</div>
-  if (!product) return <div>No product data available.</div>
+      if (!response.ok) {
+        throw new Error(data?.message || 'Failed to start auction')
+      }
 
-  const img = product.images && product.images.length ? product.images[0].url : undefined
+      setProduct((prev) => prev ? { ...prev, status: 'live' } : prev)
+      setActionMessage('Auction started successfully.')
+    } catch (err) {
+      setActionMessage(err instanceof Error ? err.message : 'Something went wrong')
+    } finally {
+      setStartingAuction(false)
+    }
+  }
+
+  const handleEndAuction = async () => {
+    if (!id || !isAdmin) return
+
+    try {
+      setEndingAuction(true)
+      setActionMessage(null)
+      const token = Cookies.get('token')
+      const response = await fetch(`${PRODUCT_SERVICE}/api/product/${id}/end-auction`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data?.message || 'Failed to end auction')
+      }
+
+      setProduct((prev) => prev ? { ...prev, status: 'ended' } : prev)
+      setActionMessage('Auction ended successfully.')
+    } catch (err) {
+      setActionMessage(err instanceof Error ? err.message : 'Something went wrong')
+    } finally {
+      setEndingAuction(false)
+    }
+  }
+
+  const handlePlaceBid = async () => {
+    if (!id || !product || !user) return
+
+    const parsedAmount = Number(bidAmount)
+    if (!parsedAmount || parsedAmount <= baseBid) {
+      setActionMessage(`Enter an amount greater than $${baseBid}`)
+      return
+    }
+
+    try {
+      setPlacingBid(true)
+      setActionMessage(null)
+      const token = Cookies.get('token')
+      const response = await fetch(`${PRODUCT_SERVICE}/api/product/${id}/bid`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ amount: parsedAmount }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data?.message || 'Failed to place bid')
+      }
+
+      setProduct((prev) => prev ? { ...prev, currentBid: parsedAmount } : prev)
+      setActionMessage(`Bid of $${parsedAmount} placed successfully.`)
+    } catch (err) {
+      setActionMessage(err instanceof Error ? err.message : 'Something went wrong')
+    } finally {
+      setPlacingBid(false)
+    }
+  }
 
   return (
-    <div style={{ maxWidth: 980, margin: '24px auto', display: 'grid', gridTemplateColumns: '1fr 400px', gap: 24 }}>
-      <div>
-        <div style={{ border: '1px solid #e6e6e6', borderRadius: 8, padding: 12 }}>
-          <img
-            src={img || '/placeholder.png'}
-            alt={product.name}
-            style={{ width: '100%', height: 420, objectFit: 'cover', borderRadius: 6 }}
-          />
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-white via-orange-50 to-white py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Link to="/products" className="inline-flex items-center text-orange-600 hover:text-orange-700 font-medium mb-6">
+          ← Back to products
+        </Link>
 
-        <h2 style={{ marginTop: 12 }}>{product.name}</h2>
-        <div style={{ color: '#666', marginBottom: 12 }}>{product.category?.name || 'Uncategorized'}</div>
-        <p style={{ lineHeight: 1.6 }}>{product.description}</p>
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-16">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500 mb-4" />
+            <p className="text-gray-600">Loading product details...</p>
+          </div>
+        ) : error ? (
+          <div className="rounded-xl border border-red-200 bg-red-50 p-8 text-center">
+            <h2 className="text-xl font-semibold text-red-700">Unable to load product</h2>
+            <p className="mt-2 text-red-600">{error}</p>
+          </div>
+        ) : product ? (
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+            <div>
+              <div className="overflow-hidden rounded-2xl bg-white shadow-lg">
+                <img src={imageUrl} alt={product.name} className="h-[420px] w-full object-cover" />
+              </div>
+
+              {product.images && product.images.length > 1 && (
+                <div className="mt-4 grid grid-cols-4 gap-3">
+                  {product.images.map((image, index) => (
+                    <button
+                      key={image.id || index}
+                      onClick={() => setActiveImage(index)}
+                      className={`overflow-hidden rounded-lg border-2 ${activeImage === index ? 'border-orange-500' : 'border-transparent'}`}
+                    >
+                      <img src={image.url} alt={`${product.name} ${index + 1}`} className="h-20 w-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-6">
+              <div>
+                <span className={`inline-flex rounded-full px-3 py-1 text-sm font-semibold capitalize ${statusClasses[product.status]}`}>
+                  {product.status}
+                </span>
+                <h1 className="mt-4 text-3xl font-bold text-gray-900">{product.name}</h1>
+                <p className="mt-2 text-sm text-gray-500">
+                  Category: {product.category?.name || 'Uncategorized'}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+                  <p className="text-sm text-gray-500">Starting Price</p>
+                  <p className="mt-1 text-2xl font-semibold text-gray-900">${product.starting_price}</p>
+                </div>
+                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+                  <p className="text-sm text-gray-500">Current Bid</p>
+                  <p className="mt-1 text-2xl font-semibold text-orange-600">${product.currentBid || product.starting_price}</p>
+                </div>
+              </div>
+
+              <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-500">Auction Time</p>
+                    <p className="text-lg font-semibold text-gray-900">{timeLeft}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm text-gray-500">Ends</p>
+                    <p className="text-sm font-medium text-gray-700">{new Date(product.endTime).toLocaleString()}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+                <h2 className="text-xl font-semibold text-gray-900">Description</h2>
+                <p className="mt-3 text-gray-600 leading-7">
+                  {product.description || 'No description provided for this product.'}
+                </p>
+              </div>
+
+              {product.status === 'ended' && (
+                <div className="rounded-xl border border-green-200 bg-green-50 p-4 shadow-sm">
+                  <p className="text-sm font-semibold text-green-700">Auction ended</p>
+                  <p className="mt-1 text-sm text-green-600">
+                    {product.currentBid > 0
+                      ? `Winning bid: $${product.currentBid}`
+                      : 'No bids were placed.'}
+                  </p>
+                </div>
+              )}
+
+              {isAdmin && product.status === 'pending' && (
+                <button
+                  onClick={handleStartAuction}
+                  disabled={startingAuction}
+                  className="w-full rounded-lg bg-green-600 px-4 py-3 text-lg font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:bg-green-400"
+                >
+                  {startingAuction ? 'Starting Auction...' : 'Start Auction'}
+                </button>
+              )}
+
+              {isAdmin && product.status === 'live' && (
+                <button
+                  onClick={handleEndAuction}
+                  disabled={endingAuction}
+                  className="w-full rounded-lg bg-red-600 px-4 py-3 text-lg font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-red-400"
+                >
+                  {endingAuction ? 'Ending Auction...' : 'End Auction'}
+                </button>
+              )}
+
+              {actionMessage && (
+                <p className={`text-sm ${actionMessage.includes('successfully') ? 'text-green-600' : 'text-red-600'}`}>
+                  {actionMessage}
+                </p>
+              )}
+
+              {canBid && (
+                <div className="rounded-xl border border-orange-200 bg-orange-50 p-4 shadow-sm">
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setBidAmount(String(baseBid + 500))}
+                      className="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm ring-1 ring-gray-200"
+                    >
+                      +$500
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setBidAmount(String(baseBid + 1000))}
+                      className="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm ring-1 ring-gray-200"
+                    >
+                      +$1000
+                    </button>
+                  </div>
+
+                  <div className="mt-3 flex gap-2">
+                    <input
+                      type="number"
+                      min={baseBid + 1}
+                      value={bidAmount}
+                      onChange={(e) => setBidAmount(e.target.value)}
+                      className="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 outline-none focus:border-orange-500"
+                      placeholder="Enter your bid"
+                    />
+                    <button
+                      type="button"
+                      onClick={handlePlaceBid}
+                      disabled={placingBid}
+                      className="rounded-lg bg-orange-500 px-4 py-2 font-semibold text-white transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:bg-orange-300"
+                    >
+                      {placingBid ? 'Placing...' : 'Bid'}
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              <button
+                disabled={product.status !== 'live'}
+                className={`w-full rounded-lg px-4 py-3 text-lg font-semibold transition ${product.status === 'live' ? 'bg-orange-500 text-white hover:bg-orange-600' : 'cursor-not-allowed bg-gray-300 text-gray-600'}`}
+              >
+                {product.status === 'live' ? 'Place Bid' : `Auction ${product.status}`}
+              </button>
+            </div>
+          </div>
+        ) : null}
       </div>
-
-      <aside style={{ border: '1px solid #eee', padding: 16, borderRadius: 8 }}>
-        <div style={{ marginBottom: 12 }}>
-          <strong>Starting price:</strong>
-          <div>{formatCurrency(product.starting_price)}</div>
-        </div>
-
-        <div style={{ marginBottom: 12 }}>
-          <strong>Current bid:</strong>
-          <div>{formatCurrency(product.currentBid ?? 0)}</div>
-        </div>
-
-        <div style={{ marginBottom: 12 }}>
-          <strong>Status:</strong>
-          <div>{product.status || 'pending'}</div>
-        </div>
-
-        <div style={{ marginBottom: 12 }}>
-          <strong>Ends in:</strong>
-          <div>{timeRemaining(product.endTime)}</div>
-        </div>
-
-        <div style={{ marginTop: 18 }}>
-          <button style={{ width: '100%', padding: '10px 12px', background: '#0b76ef', color: '#fff', border: 'none', borderRadius: 6 }} disabled={product.status !== 'active'}>
-            Place Bid
-          </button>
-        </div>
-
-        <div style={{ marginTop: 12, fontSize: 12, color: '#666' }}>
-          <div>Owner: {product.owner ? product.owner.slice(0, 8) : '—'}</div>
-        </div>
-      </aside>
     </div>
   )
 }

@@ -7,7 +7,7 @@ import LandingPage from './pages/LandingPage'
 import VerifyPage from './pages/Verify'
 import AuthLayout from './pages/Auth/AuthLayout'
 import ProductsPage from './pages/ProductsPage'
-import ProductDetails from './pages/ProductDetails'
+import ProductDetails from './pages/ProductDetails.tsx'
 
 
 function App() {

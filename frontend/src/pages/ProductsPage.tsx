@@ -40,6 +40,7 @@ const ProductsPage = () => {
       try {
         setLoading(true)
         const token = Cookies.get("token")
+        console.log(token)
         const response = await fetch(`${PRODUCT_SERVICE}/api/product/all-products?page=1`, {
           method: 'GET',
           headers: {
@@ -53,7 +54,7 @@ const ProductsPage = () => {
         }
 
         const data = await response.json()
-        setProducts(data.products || [])
+        setProducts(data?.products || [])
         setError(null)
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred')
@@ -65,8 +66,6 @@ const ProductsPage = () => {
 
     fetchProducts()
   }, [])
-
-  console.log(products)
 
   // Filter products based on search and category
   const filteredProducts = useMemo(() => {

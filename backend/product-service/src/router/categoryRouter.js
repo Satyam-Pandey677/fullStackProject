@@ -4,7 +4,7 @@ import { createCategory, fetchCategories } from "../controller/categoryControlle
 
 const router = Router();
 
-router.route("/create-category").post(isAuth, createCategory)
-router.route("/categories").get(isAuth, fetchCategories)
+router.route("/create").post(isAuth, createCategory)
+router.route("/").get(isAuth, fetchCategories)
 
 export default router

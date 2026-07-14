@@ -38,8 +38,6 @@ export const fetchCategories = asyncHandler(async(req, res) =>{
         throw new Error(400, "Something went wrong")
     }
 
-    console.log(categories)
-
     return res.status(200)
     .json({
         message:"Fetched All Categorieds",

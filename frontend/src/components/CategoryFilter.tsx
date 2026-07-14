@@ -27,7 +27,7 @@ const CategoryFilter: React.FC<{
             return
         }
 
-        const {data} = await axios.get(`${PRODUCT_SERVICE}/api/product/categories`, {
+        const {data} = await axios.get(`${PRODUCT_SERVICE}/api/categories`, {
             headers:{
                 Authorization: `Bearer ${token}`
             }

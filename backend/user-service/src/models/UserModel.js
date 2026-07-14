@@ -13,6 +13,10 @@ const userSchema= new Schema({
     },
     phone:{
         type:Number
+    },
+    isAdmin:{
+        type:Boolean,
+        default:false
     }
 },{
     timestamps:true

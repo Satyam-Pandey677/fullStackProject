@@ -14,7 +14,6 @@ connectRabbitMQ();
 dbConnect()
 
 
-console.log(process.env.REDIS_URL)
 
 export const client = createClient({
     url:`${process.env.REDIS_URL}`

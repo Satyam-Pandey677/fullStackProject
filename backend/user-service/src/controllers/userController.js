@@ -107,6 +107,7 @@ export const profile = async( req, res) => {
     try {
         const user = req.user;
 
+        
         if(!user){
             res.status(400)
             throw new Error("User Not authorized")
@@ -116,7 +117,6 @@ export const profile = async( req, res) => {
             message:"Your Profile",
             user
         })
-        .json()
     } catch (error) {
         throw new Error("User not login",error)
     }

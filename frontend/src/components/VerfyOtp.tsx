@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import Cookies from "js-cookie";
 import { useAppData } from "../context/ContextProvider";
+import { USER_SERVICE } from "../Constent";
 const VerfyOtp = () => {
   const [searchParams] = useSearchParams();
   const email = searchParams.get("email");
@@ -52,7 +53,7 @@ const VerfyOtp = () => {
     setLoading(true);
 
     try {
-      const { data } = await axios.post(`/api/user/verify`, {
+      const { data } = await axios.post(`${USER_SERVICE}/api/user/verify`, {
         email,
         otp: otpString,
       });

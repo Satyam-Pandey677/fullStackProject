@@ -47,79 +47,53 @@ io.on("connection", (socket) => {
 
 export const startAuctionTimer = (productId, seconds) => {
     if(auctionTimers[productId]){
-        clearInterval(
-            auctionTimers[productId].interval
-        );
+        clearInterval(auctionTimers[productId].interval)
     }
 
-    const endTimer = Date.now() + seconds * 1000;
-
-    auctionTimers[productId] = {};
+    const endTimer = Date.now() + seconds * 1000
+    auctionTimers[productId] = {}
 
     auctionTimers[productId].interval = setInterval(async() => {
         try {
-            const remaining = endTimer - Date.now();
+            const remaining = endTimer - Date.now()
+            io.to(productId).emit("countdown", { remaining })
 
-            io.to(productId).emit("countdown", {
-                remaining
+            if(remaining <= 0){
+                clearInterval(auctionTimers[productId].interval)
+                delete auctionTimers[productId]
+
+                const product = await PRODUCT.findById(productId)
+
+                if(!product){
+                    return
+                }
+
+                const highestBid = await BID.findOne({ product: productId })
+                    .sort({ amount: -1 })
+                    .populate("bidder", "name email")
+
+                product.status = "ended"
+
+                if(highestBid){
+                    product.currentBid = highestBid.amount
+                    product.AuctionWinner = highestBid.bidder._id
+                }
+
+                await product.save()
+
+                io.to(productId).emit("auctionEnded", {
+                    productId,
+                    winner: highestBid?.bidder || null,
+                    amount: highestBid?.amount || 0
+                })
+
+                console.log(`Auction ended for ${productId}`)
             }
-        );
-
-        //action end
-
-        if(remaining <= 0){
-            clearInterval(
-                auctionTimers[productId].interval
-            );
-
-            delete auctionTimers[
-                productId
-            ]
-
-            const product = await PRODUCT.findById(productId);
-
-            if(!product){
-                return;
-            }
-
-            const highestBid = await BID.findOne({
-                product:productId
-            }).sort({
-                amount: -1
-            }).populate(
-                "bidder",
-                "name email"
-            )
-
-            product.status = "ended";
-
-            ///winner 
-            if(highestBid){
-                product.currentBid = amount;
-
-                product.AuctionWinner = highestBid.bidder._id
-            }
-
-            await product.save();
-
-            //Emit end Event
-
-            io.to(productId).emit("auctionEnded",{
-                productId,
-
-                winner: highestBid?.bidder || null,
-
-                amount: highestBid?.amount || 0
-            })
-
-            console.log(`Auction ended for ${productId}`)
-        }
         } catch (error) {
-            console.log("Auciton Timer Error", error.message)
+            console.log("Auction Timer Error", error.message)
         }
-
-    })
- }
+    }, 1000)
+}
 
 export {app, io, server}
 
