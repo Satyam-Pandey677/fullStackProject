@@ -7,8 +7,11 @@ import {createClient} from "redis"
 import productRouter from "./router/productRouter.js"
 import categoryRouter from "./router/categoryRouter.js"
 
+import http from "http"
+import { Server } from "socket.io";
+import { app, server } from "./config/socket.js";
 
-const app = express();
+
 const port = process.env.PORT
 
 app.use(express.json());
@@ -27,6 +30,6 @@ export const client = createClient({
 client.connect().then(() =>  console.log("Connected to redis"))
 
 
-app.listen(port, () => {
+server.listen(port, () => {
     console.log("Product server running on :",port)
 })

@@ -40,7 +40,6 @@ const ProductsPage = () => {
       try {
         setLoading(true)
         const token = Cookies.get("token")
-        console.log(token)
         const response = await fetch(`${PRODUCT_SERVICE}/api/product/all-products?page=1`, {
           method: 'GET',
           headers: {

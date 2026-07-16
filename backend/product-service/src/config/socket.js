@@ -10,8 +10,7 @@ const server = http.createServer(app)
 
 const io = new Server(server,{
     cors:{
-        origin:"*",
-        methods:['Get', "Post"]
+        origin:"http://localhost:5173",
     }
 });
 
@@ -32,7 +31,7 @@ io.on("connection", (socket) => {
         console.log(`User ${userId} mapped to socket ${socket.id}`);
     }
 
-    socket.on("joinChat", (productId) =>{
+    socket.on("joinBid", (productId) =>{
         socket.join(productId);
         console.log(`user ${userId} joined chat room ${productId}`)
     })

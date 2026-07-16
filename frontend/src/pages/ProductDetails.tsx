@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { data, Link, useParams } from 'react-router-dom'
 import Cookies from 'js-cookie'
 import { PRODUCT_SERVICE } from '../Constent'
 import { useAppData } from '../context/ContextProvider'
+import socket from '../utils/Socket'
 
 interface ProductImage {
   url: string
@@ -73,6 +74,14 @@ const ProductDetails = () => {
         return
       }
 
+      
+
+      const handleBidPrice = (data:any) => {
+        console.log(data)
+      }
+
+      socket.on("bidPlaced",handleBidPrice)
+
       try {
         setLoading(true)
         const token = Cookies.get('token')
@@ -91,6 +100,7 @@ const ProductDetails = () => {
         const data = await response.json()
         setProduct(data?.product || null)
         setError(null)
+
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An unexpected error occurred')
         setProduct(null)
@@ -98,8 +108,9 @@ const ProductDetails = () => {
         setLoading(false)
       }
     }
-
+    
     fetchProduct()
+    socket.emit("joinBit", product?._id)
   }, [id])
 
   useEffect(() => {
