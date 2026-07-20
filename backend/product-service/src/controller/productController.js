@@ -264,7 +264,6 @@ const endAuction = asyncHandler(async(req, res) => {
 
     const highestBid = await BID.findOne({ product: id })
         .sort({ amount: -1 })
-        .populate("bidder", "name email")
 
     product.status = "ended"
 
@@ -334,6 +333,7 @@ const placeBid = asyncHandler(async(req, res) => {
         })
     }
 
+
     const bid = await BID.create({
         product:productId,
         bidder:bidderId,
@@ -344,7 +344,7 @@ const placeBid = asyncHandler(async(req, res) => {
     product.highestBidder = bidderId;
     await product.save();
 
-    const populateBid = await BID.findById(bid._id).populate("bidder", "name email");
+    const populateBid = await BID.findById(bid._id)
 
     io.to(productId).emit("bidPlaced", {
         productId,

@@ -33,7 +33,11 @@ io.on("connection", (socket) => {
 
     socket.on("joinBid", (productId) =>{
         socket.join(productId);
-        console.log(`user ${userId} joined chat room ${productId}`)
+        console.log(`user ${socket.id} joined chat room ${productId}`)
+    })
+
+    socket.on("bidPlaced", (socket, bidAmount, username) => {
+        console.log(bidAmount, username)
     })
 
     socket.on("disconnect", (productId) => {

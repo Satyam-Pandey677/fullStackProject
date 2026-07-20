@@ -60,6 +60,8 @@ const ProductDetails = () => {
   const [startingAuction, setStartingAuction] = useState(false)
   const [endingAuction, setEndingAuction] = useState(false)
   const [placingBid, setPlacingBid] = useState(false)
+
+  const [currentPrice, setCurrentPrice] = useState(0)
   const [actionMessage, setActionMessage] = useState<string | null>(null)
   const [bidAmount, setBidAmount] = useState('')
 
@@ -98,7 +100,13 @@ const ProductDetails = () => {
         }
 
         const data = await response.json()
+
+        console.log(data)
+        setCurrentPrice(data.product.currentBid)
         setProduct(data?.product || null)
+        console.log("before join channel")
+        socket.emit("joinBid", data.product?._id)
+        console.log("after join channel")
         setError(null)
 
       } catch (err) {
@@ -110,7 +118,7 @@ const ProductDetails = () => {
     }
     
     fetchProduct()
-    socket.emit("joinBit", product?._id)
+    
   }, [id])
 
   useEffect(() => {
@@ -118,6 +126,11 @@ const ProductDetails = () => {
       const currentBase = product.currentBid > 0 ? product.currentBid : product.starting_price
       setBidAmount(String(currentBase + 1000))
     }
+
+    socket.on("bidPlaced", (bidDeatails) => {
+        console.log(bidDeatails.amount)
+        setCurrentPrice(bidDeatails.amount)
+    })
   }, [product])
 
   const timeLeft = useMemo(() => {
@@ -188,7 +201,11 @@ const ProductDetails = () => {
       }
 
       setProduct((prev) => prev ? { ...prev, status: 'ended' } : prev)
-      setActionMessage('Auction ended successfully.')
+
+      socket.on("auctionEnded", (details) => {
+        setActionMessage(`Auction ended successfully & Winner is ${details.winner}.`)
+      })
+
     } catch (err) {
       setActionMessage(err instanceof Error ? err.message : 'Something went wrong')
     } finally {
@@ -223,6 +240,7 @@ const ProductDetails = () => {
       if (!response.ok) {
         throw new Error(data?.message || 'Failed to place bid')
       }
+
 
       setProduct((prev) => prev ? { ...prev, currentBid: parsedAmount } : prev)
       setActionMessage(`Bid of $${parsedAmount} placed successfully.`)
@@ -290,7 +308,7 @@ const ProductDetails = () => {
                 </div>
                 <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
                   <p className="text-sm text-gray-500">Current Bid</p>
-                  <p className="mt-1 text-2xl font-semibold text-orange-600">${product.currentBid || product.starting_price}</p>
+                  <p className="mt-1 text-2xl font-semibold text-orange-600">${currentPrice}</p>
                 </div>
               </div>
 
