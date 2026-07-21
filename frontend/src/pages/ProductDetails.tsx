@@ -409,12 +409,12 @@ const ProductDetails = () => {
                 </div>
               )}
 
-              <button
+              {/* <button
                 disabled={product.status !== 'live'}
                 className={`w-full rounded-lg px-4 py-3 text-lg font-semibold transition ${product.status === 'live' ? 'bg-orange-500 text-white hover:bg-orange-600' : 'cursor-not-allowed bg-gray-300 text-gray-600'}`}
               >
                 {product.status === 'live' ? 'Place Bid' : `Auction ${product.status}`}
-              </button>
+              </button> */}
             </div>
           </div>
         ) : null}
