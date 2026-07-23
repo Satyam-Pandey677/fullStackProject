@@ -79,7 +79,6 @@ export  const verifyOtp = async(req, res) => {
     await client.del(`otp:${email}`)
 
     let user = await USER.findOne({email});
-    console.log(user)
     if(user == null){
         const name = email.slice(0,8);
         user = await USER.create({name,email});
