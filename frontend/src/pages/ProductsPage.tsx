@@ -19,6 +19,7 @@ export interface IProduct {
   endTime: string | Date;
   status: 'pending' | 'live' | 'ended';
   owner: string;
+  AuctionWinner:string
   category:{
     _id:string,
     name:string

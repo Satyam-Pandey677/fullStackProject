@@ -3,7 +3,7 @@ import { client } from "../index.js";
 import jwt from "jsonwebtoken"
 import { USER } from "../models/UserModel.js";
 import { publishToQueue } from "../config/rabbitmq.js";
-
+import { asyncHandler } from "../utils/asyncHandler.js";
 
 const getToken = (user) => {
     const token = jwt.sign({user:user}, process.env.JWT_SECRET, {
@@ -105,7 +105,6 @@ export  const verifyOtp = async(req, res) => {
 export const profile = async( req, res) => {
     try {
         const user = req.user;
-
         
         if(!user){
             res.status(400)
@@ -120,6 +119,30 @@ export const profile = async( req, res) => {
         throw new Error("User not login",error)
     }
 }
+
+export const userById = asyncHandler(async (req, res) =>  {
+    const {id} = req.params;
+
+    console.log(id)
+
+    if(!id){
+        throw new Error ("Id is required");
+    }
+
+    const user = await USER.findById(id);
+    
+    if(!user) {
+        res.status(404)
+        throw new Error("Some thing went Wrong");
+    }
+
+    return res.status(201)
+    .json({
+        message:"User By Id",
+        user
+    })
+    
+})
 
 export const updateProfile = async (req, res) => {
     try {

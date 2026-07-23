@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { IProduct } from '../pages/ProductsPage';
+import { USER_SERVICE } from '../Constent';
+import Cookies from 'js-cookie';
 
 interface ProductImage {
   url: string;
@@ -30,6 +32,7 @@ const calculateTimeLeft = (endTime: string | Date): string => {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(product.endTime));
+  const [winner, setWinner] = useState<any>({})
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -38,6 +41,23 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
     return () => clearInterval(timer);
   }, [product.endTime]);
+
+  useEffect(() => {
+    (async() => {
+
+      const token = Cookies.get("token")
+
+      const res = await fetch(`${USER_SERVICE}/api/user/profile/${product.AuctionWinner}`,{
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+      const data = await res.json()
+      setWinner(data.user)
+    })()
+  },[])
 
   // Get first image from images array
   const imageUrl = product.images && product.images.length > 0 
@@ -79,7 +99,25 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         )}
 
         {/* Bid Information */}
-        <div className="mb-3 space-y-2">
+
+        {
+            product.status == "ended" ? (
+              <>
+                <div className="mb-3 space-y-2">
+          <div className="flex justify-between items-center">
+            <span className="text-sm text-gray-600">Winner:</span>
+            <span className="text-lg font-bold text-orange-500">
+              {winner?.name}
+            </span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-sm text-gray-600">Highest bid:</span>
+            <span className="text-sm font-semibold text-gray-700">${product.currentBid}</span>
+          </div>
+        </div>
+              </>
+            ) : (
+              <div className="mb-3 space-y-2">
           <div className="flex justify-between items-center">
             <span className="text-sm text-gray-600">Current Bid:</span>
             <span className="text-lg font-bold text-orange-500">
@@ -91,6 +129,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             <span className="text-sm font-semibold text-gray-700">${product.starting_price}</span>
           </div>
         </div>
+            )
+        }
+        
 
         {/* Place Bid Button */}
         <button 
