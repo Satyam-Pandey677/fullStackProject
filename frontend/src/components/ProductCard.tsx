@@ -63,9 +63,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <div className={`absolute top-3 right-3 ${statusColor[product.status]} text-white px-3 py-1 rounded-full text-xs font-semibold capitalize`}>
           {product.status}
         </div>
-        <div className="absolute top-3 left-3 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
-          {timeLeft}
-        </div>
       </div>
 
       {/* Content Container */}

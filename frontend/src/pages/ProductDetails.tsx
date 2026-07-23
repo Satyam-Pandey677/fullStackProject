@@ -65,6 +65,8 @@ const ProductDetails = () => {
   const [actionMessage, setActionMessage] = useState<string | null>(null)
   const [bidAmount, setBidAmount] = useState('')
 
+  const [timer, setTimer] = useState(0);
+
   const { user } = useAppData()
 
   
@@ -108,7 +110,7 @@ const ProductDetails = () => {
         socket.emit("joinBid", data.product?._id)
         console.log("after join channel")
         setError(null)
-
+        
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An unexpected error occurred')
         setProduct(null)
@@ -120,18 +122,26 @@ const ProductDetails = () => {
     fetchProduct()
     
   }, [id])
-
+  
   useEffect(() => {
     if (product) {
       const currentBase = product.currentBid > 0 ? product.currentBid : product.starting_price
       setBidAmount(String(currentBase + 1000))
     }
-
+    
     socket.on("bidPlaced", (bidDeatails) => {
-        console.log(bidDeatails.amount)
-        setCurrentPrice(bidDeatails.amount)
+      console.log(bidDeatails.amount)
+      setCurrentPrice(bidDeatails.amount)
     })
   }, [product])
+  
+  useEffect(() => {
+    socket.on("countdown", (t) => {
+        setTimer(t);
+        console.log(t)
+    })
+
+  },[])
 
   const timeLeft = useMemo(() => {
     if (!product) return 'Loading...'
