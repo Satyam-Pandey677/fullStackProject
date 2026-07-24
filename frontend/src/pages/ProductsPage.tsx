@@ -55,6 +55,7 @@ const ProductsPage = () => {
 
         const data = await response.json()
         setProducts(data?.products || [])
+        console.log(products)
         setError(null)
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred')

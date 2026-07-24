@@ -96,15 +96,25 @@ const deleteProduct = asyncHandler(async(req, res) =>{
 })
 
 const GetAllProduct  =asyncHandler(async(req, res) => {
-    // const cache  = await client.get("products")
-    // console.log(JSON.parse(cache))
-    // if(cache){
-    //     return res.json(JSON.parse(cache));
-    // }
 
     const page = parseInt(req.query.page)||1;
     const limit = 10;
     const skip = (page - 1) * limit 
+
+    const cacheKey = `products:page=${page}`
+
+    const cache  = await client.get(cacheKey)
+     if(cache){
+        console.log("cache hit")
+         return res.status(201)
+              .json({
+                    message:`Page ${page}`,
+                    products: JSON.parse(cache)
+              });
+     }
+
+     console.log("cache miss")
+    
 
     const products = await PRODUCT
     .find()
@@ -114,11 +124,11 @@ const GetAllProduct  =asyncHandler(async(req, res) => {
     .skip(skip)
     .limit(limit)
 
-    // await client.setEx(
-    //     "products",
-    //     30,
-    //     JSON.stringify(products)
-    // )
+    await client.setEx(
+        cacheKey,
+        3600,
+        JSON.stringify(products)
+    )
 
     return res.status(200)
     .json({

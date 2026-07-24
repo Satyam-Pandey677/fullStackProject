@@ -46,8 +46,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     (async() => {
 
       const token = Cookies.get("token")
+      console.log(product)
 
-      const res = await fetch(`${USER_SERVICE}/api/user/profile/${product.AuctionWinner}`,{
+      if(product.status == "pending" || product.status == "live"){
+        return
+      }
+      const res = await fetch(`${USER_SERVICE}/api/user/profile/${product?.AuctionWinner}`,{
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
