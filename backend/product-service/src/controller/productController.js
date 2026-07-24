@@ -56,6 +56,12 @@ const createProduct = asyncHandler(async(req, res) =>{
         throw new Error("Something Went wrong")
     }
 
+    const keys = await client.keys("products:*")
+
+    if(keys.length > 0){
+        await client.del(keys)
+    }
+
     const message = {
             to:req.user.email,
             subject:"Thank For Post Product ",
@@ -105,15 +111,12 @@ const GetAllProduct  =asyncHandler(async(req, res) => {
 
     const cache  = await client.get(cacheKey)
      if(cache){
-        console.log("cache hit")
          return res.status(201)
               .json({
                     message:`Page ${page}`,
                     products: JSON.parse(cache)
               });
      }
-
-     console.log("cache miss")
     
 
     const products = await PRODUCT
