@@ -8,7 +8,8 @@ import { USER_SERVICE } from '../Constent';
 export interface User  {
     id:string,
     name:string,
-    email:string
+    email:string,
+    isAdmin:boolean
 }
 
 export interface UserContextType{
