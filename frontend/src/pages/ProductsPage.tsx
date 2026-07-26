@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import SearchBar from '../components/SearchBar';
 import CategoryFilter from '../components/CategoryFilter';
 import ProductCard from '../components/ProductCard';
@@ -82,7 +82,7 @@ const ProductsPage = () => {
   }, [searchValue, selectedCategory, products])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-orange-50 to-white py-8">
+    <div className="min-h-screen bg-linear-to-br from-white via-orange-50 to-white py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-10 flex justify-between">

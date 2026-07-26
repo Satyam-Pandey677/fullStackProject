@@ -3,11 +3,6 @@ import type { IProduct } from '../pages/ProductsPage';
 import { USER_SERVICE } from '../Constent';
 import Cookies from 'js-cookie';
 
-interface ProductImage {
-  url: string;
-  id: string;
-  _id?: string;
-}
 
 interface ProductCardProps {
   product: IProduct;
@@ -142,7 +137,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           disabled={product.status !== 'live'}
           className={`w-full py-2 font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 ${
             product.status === 'live'
-              ? 'bg-gradient-to-r from-orange-400 to-orange-600 text-white hover:shadow-lg'
+              ? 'bg-linear-to-r from-orange-400 to-orange-600 text-white hover:shadow-lg'
               : 'bg-gray-300 text-gray-600 cursor-not-allowed'
           }`}
         >
