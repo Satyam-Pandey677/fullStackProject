@@ -56,6 +56,8 @@ const ProfileButton: React.FC<ProfileButtonProp> = ({ name, email }) => {
           border border-gray-200 p-4 z-50 animate-fade-in
           transition-all duration-200
         '>
+
+          
           {/* Arrow pointer */}
           <div className='
             absolute -top-1 left-15 w-4 h-4 bg-white
