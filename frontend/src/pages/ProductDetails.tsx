@@ -282,7 +282,7 @@ const ProductDetails = () => {
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
             <div>
               <div className="overflow-hidden rounded-3xl border border-white/10 bg-slate-900/80 shadow-[0_20px_80px_rgba(0,0,0,0.25)]">
-                <img src={imageUrl} alt={product.name} className="h-[420px] w-full object-cover" />
+                <img src={imageUrl} alt={product.name} className="h-105 w-full object-cover" />
               </div>
 
               {product.images && product.images.length > 1 && (
