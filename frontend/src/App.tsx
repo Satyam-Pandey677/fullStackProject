@@ -9,6 +9,7 @@ import ProductsPage from "./pages/ProductsPage";
 import ProductDetails from "./pages/ProductDetails.tsx";
 import AdminLayout from "./pages/Admin/AdminLayout.tsx";
 import AllUsers from "./pages/Admin/AllUsers.tsx";
+import CompletedProductsPage from "./pages/CompletedProductsPage";
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
       <Route element={<AuthLayout />}>
         <Route path="/products" element={<ProductsPage />} />
         <Route path="/:id" element={<ProductDetails />} />
+        <Route path="/completed-products" element={<CompletedProductsPage />} />
         <Route element={<AdminLayout />}>
           <Route path="/all-users" element={<AllUsers />} />
         </Route>

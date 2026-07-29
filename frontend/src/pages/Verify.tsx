@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+import { Suspense } from 'react'
 import VerfyOtp from '../components/VerfyOtp'
 import Loading from '../components/Loading'
 

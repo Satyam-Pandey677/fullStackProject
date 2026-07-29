@@ -3,8 +3,6 @@ import { PRODUCT_SERVICE } from "../Constent";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 
-const CATEGORIES = ['All', 'Electronics', 'Accessories', 'Fashion', 'Home'];
-
 interface category{
   _id:string,
   name:string
@@ -41,17 +39,17 @@ const CategoryFilter: React.FC<{
     },[])
 
   return (
-    <div className="mb-8">
-      <h3 className="text-lg font-semibold text-gray-800 mb-4">Categories</h3>
+    <div className="mb-8 rounded-2xl border border-white/10 bg-slate-900/70 p-4 shadow-[0_10px_40px_rgba(0,0,0,0.2)]">
+      <h3 className="mb-4 text-lg font-semibold text-white">Categories</h3>
       <div className="flex flex-wrap gap-3">
         {categories.map((category) => (
           <button
             key={category._id}
             onClick={() => onCategoryChange(category.name)}
-            className={`px-6 py-2 rounded-full font-medium transition-all duration-300 ${
+            className={`rounded-full px-6 py-2 font-medium transition-all duration-300 ${
               selectedCategory === category.name
-                ? 'bg-gradient-to-r from-orange-400 to-orange-600 text-white shadow-lg'
-                : 'bg-gray-100 text-gray-700 hover:bg-orange-100'
+                ? 'bg-linear-to-r from-orange-500 to-amber-400 text-slate-950 shadow-lg'
+                : 'bg-slate-800/80 text-slate-300 hover:bg-orange-500/15 hover:text-orange-300'
             }`}
           >
             {category.name}

@@ -20,7 +20,7 @@ const VerfyOtp = () => {
   const { isAuth, setUser, setIsAuth } = useAppData();
 
   useEffect(() => {
-    let timer: NodeJS.Timeout | null = null;
+    let timer: ReturnType<typeof setTimeout> | null = null;
     if (resendTimer > 0) {
       timer = setTimeout(() => setResendTimer((t) => t - 1), 1000);
     }
@@ -134,16 +134,14 @@ const VerfyOtp = () => {
   }
 
   return (
-    <div className="flex justify-center items-center min-h-screen w-full bg-gray-900 text-white px-4">
-      <div className="w-full max-w-md bg-[#0b0b0b] p-6 rounded-lg shadow-lg border border-orange-400">
-        <h1 className="font-bold text-2xl text-center mb-2">Verify OTP</h1>
-        <p className="text-sm text-center text-gray-300 mb-4">
-          We sent a 6-digit code to your email address
-        </p>
-        <p className="text-sm text-center text-orange-200 mb-4 break-words">{email}</p>
+    <div className="flex min-h-screen w-full items-center justify-center bg-[radial-gradient(circle_at_top_left,rgba(249,115,22,0.18),transparent_25%),linear-gradient(135deg,#050816_0%,#0f172a_45%,#020617_100%)] px-4 text-white">
+      <div className="w-full max-w-md rounded-2xl border border-white/10 bg-slate-900/80 p-6 shadow-[0_20px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl">
+        <h1 className="mb-2 text-center text-2xl font-bold">Verify OTP</h1>
+        <p className="mb-4 text-center text-sm text-slate-300">We sent a 6-digit code to your email address</p>
+        <p className="mb-4 break-words text-center text-sm text-orange-200">{email}</p>
 
         <form onSubmit={handleSubmit} className="flex flex-col items-center" aria-label="OTP form">
-          <div className="flex gap-3 justify-center mb-4">
+          <div className="mb-4 flex justify-center gap-3">
             {otp.map((digit, index) => (
               <input
                 key={index}
@@ -152,7 +150,7 @@ const VerfyOtp = () => {
                 inputMode="numeric"
                 pattern="[0-9]*"
                 aria-label={`OTP digit ${index + 1}`}
-                className="w-12 h-12 text-center text-xl rounded-md bg-gray-800 border border-gray-700 focus:border-orange-400 focus:outline-none"
+                className="h-12 w-12 rounded-md border border-white/10 bg-slate-800/80 text-center text-xl text-white outline-none focus:border-orange-400"
                 onChange={(e) => handleChange(index, e.target.value)}
                 ref={(el: HTMLInputElement | null) => {
                   inputRef.current[index] = el;
@@ -163,30 +161,19 @@ const VerfyOtp = () => {
             ))}
           </div>
 
-          {error && <div className="text-red-400 text-sm mb-2">{error}</div>}
-          {message && <div className="text-green-400 text-sm mb-2">{message}</div>}
+          {error && <div className="mb-2 text-sm text-red-400">{error}</div>}
+          {message && <div className="mb-2 text-sm text-green-400">{message}</div>}
 
-          <button
-            type="submit"
-            className="w-full py-2 bg-orange-500 hover:bg-orange-600 rounded-md font-semibold disabled:opacity-60"
-            disabled={loading}
-          >
+          <button type="submit" className="w-full rounded-md bg-linear-to-r from-orange-500 to-amber-400 py-2 font-semibold text-slate-950 disabled:opacity-60" disabled={loading}>
             {loading ? "Verifying..." : "Verify"}
           </button>
 
-          <div className="flex items-center justify-between w-full mt-4">
-            <button
-              type="button"
-              onClick={handleResend}
-              disabled={resendTimer > 0}
-              className="text-sm text-gray-300 hover:text-white disabled:opacity-50"
-            >
+          <div className="mt-4 flex w-full items-center justify-between">
+            <button type="button" onClick={handleResend} disabled={resendTimer > 0} className="text-sm text-slate-300 hover:text-white disabled:opacity-50">
               {resendTimer > 0 ? `Resend OTP in ${resendTimer}s` : "Resend OTP"}
             </button>
 
-            <Link to="/login" className="text-sm text-gray-300 hover:text-white">
-              Back to Login
-            </Link>
+            <Link to="/login" className="text-sm text-slate-300 hover:text-white">Back to Login</Link>
           </div>
         </form>
       </div>

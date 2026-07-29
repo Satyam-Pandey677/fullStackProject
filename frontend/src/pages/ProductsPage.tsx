@@ -82,101 +82,62 @@ const ProductsPage = () => {
   }, [searchValue, selectedCategory, products])
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-white via-orange-50 to-white py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="mb-10 flex justify-between">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(249,115,22,0.16),transparent_25%),linear-gradient(135deg,#050816_0%,#0f172a_45%,#020617_100%)] py-8">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">
-            Explore Auctions
-          </h1>
-          <p className="text-gray-600 text-lg">
-            Find amazing items and place your bids
-          </p>
+            <h1 className="mb-2 text-4xl font-bold text-white">Explore Auctions</h1>
+            <p className="text-lg text-slate-300">Find amazing items and place your bids</p>
           </div>
-          {user && <ProfileButton name={user?.name} email={user?.email}/>}
+          {user && <ProfileButton name={user?.name} email={user?.email} />}
         </div>
 
-        {/* Search Bar */}
         <SearchBar searchValue={searchValue} onSearchChange={setSearchValue} />
 
-        {/* Filters and Products Container */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-          {/* Sidebar - Categories */}
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-5">
           <div className="lg:col-span-1">
             <div className="sticky top-8">
-              <CategoryFilter
-                selectedCategory={selectedCategory}
-                onCategoryChange={setSelectedCategory}
-              />
+              <CategoryFilter selectedCategory={selectedCategory} onCategoryChange={setSelectedCategory} />
             </div>
           </div>
 
-          {/* Main Content - Products Grid */}
           <div className="lg:col-span-4">
             {loading ? (
               <div className="flex flex-col items-center justify-center py-16">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500 mb-4"></div>
-                <p className="text-gray-600">Loading products...</p>
+                <div className="mb-4 h-12 w-12 animate-spin rounded-full border-t-2 border-b-2 border-orange-500"></div>
+                <p className="text-slate-300">Loading products...</p>
               </div>
             ) : error ? (
-              <div className="flex flex-col items-center justify-center py-16 bg-red-50 rounded-lg p-6">
-                <svg
-                  className="w-24 h-24 text-red-300 mb-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1}
-                    d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
+              <div className="flex flex-col items-center justify-center rounded-2xl border border-red-400/20 bg-red-500/10 p-6 py-16">
+                <svg className="mb-4 h-24 w-24 text-red-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <h3 className="text-xl font-semibold text-red-700 mb-2">
-                  Error loading products
-                </h3>
-                <p className="text-red-600">{error}</p>
+                <h3 className="mb-2 text-xl font-semibold text-red-200">Error loading products</h3>
+                <p className="text-red-300">{error}</p>
               </div>
             ) : filteredProducts.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {filteredProducts.map((product) => (
                   <Link key={product._id} to={`/${product._id}`}>
-                  <ProductCard  product={product} />
+                    <ProductCard product={product} />
                   </Link>
                 ))}
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center py-16">
-                <svg
-                  className="w-24 h-24 text-gray-300 mb-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1}
-                    d="M20 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"
-                  />
+                <svg className="mb-4 h-24 w-24 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M20 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" />
                 </svg>
-                <h3 className="text-xl font-semibold text-gray-700 mb-2">
-                  No products found
-                </h3>
-                <p className="text-gray-600">
-                  Try adjusting your search or category filters
-                </p>
+                <h3 className="mb-2 text-xl font-semibold text-slate-200">No products found</h3>
+                <p className="text-slate-400">Try adjusting your search or category filters</p>
               </div>
             )}
 
-            {/* Results Count */}
             {!loading && filteredProducts.length > 0 && (
-              <div className="mt-8 text-center text-gray-600">
+              <div className="mt-8 text-center text-slate-400">
                 <p>
-                  Showing <span className="font-semibold">{filteredProducts.length}</span> of{' '}
-                  <span className="font-semibold">{products.length}</span> products
+                  Showing <span className="font-semibold text-white">{filteredProducts.length}</span> of{' '}
+                  <span className="font-semibold text-white">{products.length}</span> products
                 </p>
               </div>
             )}

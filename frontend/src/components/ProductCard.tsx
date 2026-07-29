@@ -26,7 +26,7 @@ const calculateTimeLeft = (endTime: string | Date): string => {
 };
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(product.endTime));
+  const [, setTimeLeft] = useState(calculateTimeLeft(product.endTime));
   const [winner, setWinner] = useState<any>({})
 
   useEffect(() => {
@@ -71,9 +71,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group cursor-pointer transform hover:-translate-y-1">
+    <div className="overflow-hidden rounded-2xl border border-white/10 bg-slate-900/80 shadow-[0_10px_40px_rgba(0,0,0,0.2)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_60px_rgba(15,23,42,0.35)] group cursor-pointer">
       {/* Image Container */}
-      <div className="relative overflow-hidden h-48 bg-gray-200">
+      <div className="relative h-48 overflow-hidden bg-slate-800">
         <img
           src={imageUrl}
           alt={product.name}
@@ -86,13 +86,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
       {/* Content Container */}
       <div className="p-4">
-        <h3 className="text-lg font-semibold text-gray-800 mb-2 line-clamp-2">
+        <h3 className="mb-2 line-clamp-2 text-lg font-semibold text-white">
           {product.name}
         </h3>
 
         {/* Description */}
         {product.description && (
-          <p className="text-sm text-gray-600 line-clamp-2 mb-3">
+          <p className="mb-3 line-clamp-2 text-sm text-slate-400">
             {product.description}
           </p>
         )}
@@ -104,28 +104,28 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               <>
                 <div className="mb-3 space-y-2">
           <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">Winner:</span>
-            <span className="text-lg font-bold text-orange-500">
+            <span className="text-sm text-slate-400">Winner:</span>
+            <span className="text-lg font-bold text-orange-300">
               {winner?.name}
             </span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">Highest bid:</span>
-            <span className="text-sm font-semibold text-gray-700">${product.currentBid}</span>
+            <span className="text-sm text-slate-400">Highest bid:</span>
+            <span className="text-sm font-semibold text-slate-200">${product.currentBid}</span>
           </div>
         </div>
               </>
             ) : (
               <div className="mb-3 space-y-2">
           <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">Current Bid:</span>
-            <span className="text-lg font-bold text-orange-500">
+            <span className="text-sm text-slate-400">Current Bid:</span>
+            <span className="text-lg font-bold text-orange-300">
               ${product.currentBid > 0 ? product.currentBid : product.starting_price}
             </span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">Starting Price:</span>
-            <span className="text-sm font-semibold text-gray-700">${product.starting_price}</span>
+            <span className="text-sm text-slate-400">Starting Price:</span>
+            <span className="text-sm font-semibold text-slate-200">${product.starting_price}</span>
           </div>
         </div>
             )
@@ -137,8 +137,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           disabled={product.status !== 'live'}
           className={`w-full py-2 font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 ${
             product.status === 'live'
-              ? 'bg-linear-to-r from-orange-400 to-orange-600 text-white hover:shadow-lg'
-              : 'bg-gray-300 text-gray-600 cursor-not-allowed'
+              ? 'bg-linear-to-r from-orange-500 to-amber-400 text-slate-950 hover:shadow-lg'
+              : 'cursor-not-allowed bg-slate-700 text-slate-400'
           }`}
         >
           {product.status === 'live' ? 'Place Bid' : `Auction ${product.status}`}

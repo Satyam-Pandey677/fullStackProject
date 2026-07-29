@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { data, Link, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import Cookies from 'js-cookie'
 import { PRODUCT_SERVICE } from '../Constent'
 import { useAppData } from '../context/ContextProvider'
@@ -65,7 +65,7 @@ const ProductDetails = () => {
   const [actionMessage, setActionMessage] = useState<string | null>(null)
   const [bidAmount, setBidAmount] = useState('')
 
-  const [timer, setTimer] = useState(0);
+  const [, setTimer] = useState(0);
 
   const { user } = useAppData()
 
@@ -149,9 +149,9 @@ const ProductDetails = () => {
   }, [product])
 
   const statusClasses: Record<IProduct['status'], string> = {
-    pending: 'bg-yellow-500 text-white',
-    live: 'bg-green-600 text-white',
-    ended: 'bg-red-500 text-white',
+    pending: 'bg-amber-500/20 text-amber-300 border border-amber-400/20',
+    live: 'bg-emerald-500/20 text-emerald-300 border border-emerald-400/20',
+    ended: 'bg-red-500/20 text-red-300 border border-red-400/20',
   }
 
   const imageUrl = product?.images?.[activeImage]?.url || product?.images?.[0]?.url || 'https://via.placeholder.com/800x600?text=No+Image'
@@ -262,26 +262,26 @@ const ProductDetails = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-orange-50 to-white py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Link to="/products" className="inline-flex items-center text-orange-600 hover:text-orange-700 font-medium mb-6">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(249,115,22,0.16),transparent_25%),linear-gradient(135deg,#050816_0%,#0f172a_45%,#020617_100%)] py-8">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Link to="/products" className="mb-6 inline-flex items-center font-medium text-orange-300 transition hover:text-orange-200">
           ← Back to products
         </Link>
 
         {loading ? (
           <div className="flex flex-col items-center justify-center py-16">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500 mb-4" />
-            <p className="text-gray-600">Loading product details...</p>
+            <div className="mb-4 h-12 w-12 animate-spin rounded-full border-t-2 border-b-2 border-orange-500" />
+            <p className="text-slate-300">Loading product details...</p>
           </div>
         ) : error ? (
-          <div className="rounded-xl border border-red-200 bg-red-50 p-8 text-center">
-            <h2 className="text-xl font-semibold text-red-700">Unable to load product</h2>
-            <p className="mt-2 text-red-600">{error}</p>
+          <div className="rounded-2xl border border-red-400/20 bg-red-500/10 p-8 text-center shadow-[0_20px_80px_rgba(0,0,0,0.25)]">
+            <h2 className="text-xl font-semibold text-red-200">Unable to load product</h2>
+            <p className="mt-2 text-red-300">{error}</p>
           </div>
         ) : product ? (
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
             <div>
-              <div className="overflow-hidden rounded-2xl bg-white shadow-lg">
+              <div className="overflow-hidden rounded-3xl border border-white/10 bg-slate-900/80 shadow-[0_20px_80px_rgba(0,0,0,0.25)]">
                 <img src={imageUrl} alt={product.name} className="h-[420px] w-full object-cover" />
               </div>
 
@@ -291,7 +291,7 @@ const ProductDetails = () => {
                     <button
                       key={image.id || index}
                       onClick={() => setActiveImage(index)}
-                      className={`overflow-hidden rounded-lg border-2 ${activeImage === index ? 'border-orange-500' : 'border-transparent'}`}
+                      className={`overflow-hidden rounded-xl border-2 ${activeImage === index ? 'border-orange-400' : 'border-transparent'}`}
                     >
                       <img src={image.url} alt={`${product.name} ${index + 1}`} className="h-20 w-full object-cover" />
                     </button>
@@ -305,47 +305,45 @@ const ProductDetails = () => {
                 <span className={`inline-flex rounded-full px-3 py-1 text-sm font-semibold capitalize ${statusClasses[product.status]}`}>
                   {product.status}
                 </span>
-                <h1 className="mt-4 text-3xl font-bold text-gray-900">{product.name}</h1>
-                <p className="mt-2 text-sm text-gray-500">
-                  Category: {product.category?.name || 'Uncategorized'}
-                </p>
+                <h1 className="mt-4 text-3xl font-bold text-white">{product.name}</h1>
+                <p className="mt-2 text-sm text-slate-400">Category: {product.category?.name || 'Uncategorized'}</p>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-                  <p className="text-sm text-gray-500">Starting Price</p>
-                  <p className="mt-1 text-2xl font-semibold text-gray-900">${product.starting_price}</p>
+                <div className="rounded-2xl border border-white/10 bg-slate-900/70 p-4 shadow-[0_10px_40px_rgba(0,0,0,0.2)]">
+                  <p className="text-sm text-slate-400">Starting Price</p>
+                  <p className="mt-1 text-2xl font-semibold text-white">${product.starting_price}</p>
                 </div>
-                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-                  <p className="text-sm text-gray-500">Current Bid</p>
-                  <p className="mt-1 text-2xl font-semibold text-orange-600">${currentPrice}</p>
+                <div className="rounded-2xl border border-white/10 bg-slate-900/70 p-4 shadow-[0_10px_40px_rgba(0,0,0,0.2)]">
+                  <p className="text-sm text-slate-400">Current Bid</p>
+                  <p className="mt-1 text-2xl font-semibold text-orange-300">${currentPrice}</p>
                 </div>
               </div>
 
-              <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+              <div className="rounded-2xl border border-white/10 bg-slate-900/70 p-6 shadow-[0_10px_40px_rgba(0,0,0,0.2)]">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-gray-500">Auction Time</p>
-                    <p className="text-lg font-semibold text-gray-900">{timeLeft}</p>
+                    <p className="text-sm text-slate-400">Auction Time</p>
+                    <p className="text-lg font-semibold text-white">{timeLeft}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm text-gray-500">Ends</p>
-                    <p className="text-sm font-medium text-gray-700">{new Date(product.endTime).toLocaleString()}</p>
+                    <p className="text-sm text-slate-400">Ends</p>
+                    <p className="text-sm font-medium text-slate-300">{new Date(product.endTime).toLocaleString()}</p>
                   </div>
                 </div>
               </div>
 
-              <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-                <h2 className="text-xl font-semibold text-gray-900">Description</h2>
-                <p className="mt-3 text-gray-600 leading-7">
+              <div className="rounded-2xl border border-white/10 bg-slate-900/70 p-6 shadow-[0_10px_40px_rgba(0,0,0,0.2)]">
+                <h2 className="text-xl font-semibold text-white">Description</h2>
+                <p className="mt-3 leading-7 text-slate-300">
                   {product.description || 'No description provided for this product.'}
                 </p>
               </div>
 
               {product.status === 'ended' && (
-                <div className="rounded-xl border border-green-200 bg-green-50 p-4 shadow-sm">
-                  <p className="text-sm font-semibold text-green-700">Auction ended</p>
-                  <p className="mt-1 text-sm text-green-600">
+                <div className="rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-4 shadow-sm">
+                  <p className="text-sm font-semibold text-emerald-300">Auction ended</p>
+                  <p className="mt-1 text-sm text-emerald-200">
                     {product.currentBid > 0
                       ? `Winning bid: $${product.currentBid}`
                       : 'No bids were placed.'}
@@ -357,7 +355,7 @@ const ProductDetails = () => {
                 <button
                   onClick={handleStartAuction}
                   disabled={startingAuction}
-                  className="w-full rounded-lg bg-green-600 px-4 py-3 text-lg font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:bg-green-400"
+                  className="w-full rounded-lg bg-linear-to-r from-emerald-500 to-emerald-400 px-4 py-3 text-lg font-semibold text-slate-950 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-70"
                 >
                   {startingAuction ? 'Starting Auction...' : 'Start Auction'}
                 </button>
@@ -367,32 +365,32 @@ const ProductDetails = () => {
                 <button
                   onClick={handleEndAuction}
                   disabled={endingAuction}
-                  className="w-full rounded-lg bg-red-600 px-4 py-3 text-lg font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-red-400"
+                  className="w-full rounded-lg bg-linear-to-r from-red-500 to-rose-400 px-4 py-3 text-lg font-semibold text-white transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-70"
                 >
                   {endingAuction ? 'Ending Auction...' : 'End Auction'}
                 </button>
               )}
 
               {actionMessage && (
-                <p className={`text-sm ${actionMessage.includes('successfully') ? 'text-green-600' : 'text-red-600'}`}>
+                <p className={`text-sm ${actionMessage.includes('successfully') ? 'text-emerald-300' : 'text-red-300'}`}>
                   {actionMessage}
                 </p>
               )}
 
               {canBid && (
-                <div className="rounded-xl border border-orange-200 bg-orange-50 p-4 shadow-sm">
+                <div className="rounded-2xl border border-orange-400/20 bg-orange-500/10 p-4 shadow-[0_10px_40px_rgba(0,0,0,0.2)]">
                   <div className="flex flex-wrap gap-2">
                     <button
                       type="button"
                       onClick={() => setBidAmount(String(baseBid + 500))}
-                      className="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm ring-1 ring-gray-200"
+                      className="rounded-md bg-slate-900/80 px-3 py-2 text-sm font-semibold text-slate-200 shadow-sm ring-1 ring-white/10"
                     >
                       +$500
                     </button>
                     <button
                       type="button"
                       onClick={() => setBidAmount(String(baseBid + 1000))}
-                      className="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm ring-1 ring-gray-200"
+                      className="rounded-md bg-slate-900/80 px-3 py-2 text-sm font-semibold text-slate-200 shadow-sm ring-1 ring-white/10"
                     >
                       +$1000
                     </button>
@@ -404,27 +402,20 @@ const ProductDetails = () => {
                       min={baseBid + 1}
                       value={bidAmount}
                       onChange={(e) => setBidAmount(e.target.value)}
-                      className="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 outline-none focus:border-orange-500"
+                      className="w-full rounded-lg border border-white/10 bg-slate-900/80 px-3 py-2 text-slate-100 outline-none placeholder:text-slate-400 focus:border-orange-400"
                       placeholder="Enter your bid"
                     />
                     <button
                       type="button"
                       onClick={handlePlaceBid}
                       disabled={placingBid}
-                      className="rounded-lg bg-orange-500 px-4 py-2 font-semibold text-white transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:bg-orange-300"
+                      className="rounded-lg bg-linear-to-r from-orange-500 to-amber-400 px-4 py-2 font-semibold text-slate-950 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-70"
                     >
                       {placingBid ? 'Placing...' : 'Bid'}
                     </button>
                   </div>
                 </div>
               )}
-
-              {/* <button
-                disabled={product.status !== 'live'}
-                className={`w-full rounded-lg px-4 py-3 text-lg font-semibold transition ${product.status === 'live' ? 'bg-orange-500 text-white hover:bg-orange-600' : 'cursor-not-allowed bg-gray-300 text-gray-600'}`}
-              >
-                {product.status === 'live' ? 'Place Bid' : `Auction ${product.status}`}
-              </button> */}
             </div>
           </div>
         ) : null}

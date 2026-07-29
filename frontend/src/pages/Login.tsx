@@ -55,31 +55,31 @@ const Verify = () => {
   }
 
   return (
-    <div className='h-screen w-full bg-black flex justify-center items-center'>
-        <div  className='w-100 p-5 border border-gray-400 flex flex-col justify-center items-center gap-5 shadow-[7px_7px_0px_0px_#EE964B] '>
-          <h1 className='text-3xl text-white font-bold text-center'>Enter Your Email</h1>
-          <p className='text-neutral-400 text-center'>Entre email for verification</p>
-          <form className='space-y-6' onSubmit={handleClick}>
-          <div className='flex flex-col justify-center items-center gap-5'>
-          <input ref={inputRef} type='text' name='input' id='input' className='mx-auto border-2 px-4 py-1 text-white' placeholder='Enter you email' value={email} onChange={(e) => setEmail(e.target.value)}/>
-          {error && <p className='text-red-500 '>{error}</p>}
-          <button className='text-white bg-orange-400 px-5 py-1'>
+    <div className='flex h-screen w-full items-center justify-center bg-[radial-gradient(circle_at_top_left,rgba(249,115,22,0.18),transparent_25%),linear-gradient(135deg,#050816_0%,#0f172a_45%,#020617_100%)]'>
+      <div className='w-full max-w-md rounded-2xl border border-white/10 bg-slate-900/80 p-6 shadow-[0_20px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl'>
+        <h1 className='text-center text-3xl font-bold text-white'>Enter Your Email</h1>
+        <p className='mt-2 text-center text-slate-400'>Enter email for verification</p>
+        <form className='mt-6 space-y-6' onSubmit={handleClick}>
+          <div className='flex flex-col items-center gap-5'>
+            <input ref={inputRef} type='text' name='input' id='input' className='mx-auto w-full rounded-lg border border-white/10 bg-slate-800/80 px-4 py-2 text-white outline-none placeholder:text-slate-400 focus:border-orange-400' placeholder='Enter your email' value={email} onChange={(e) => setEmail(e.target.value)} />
+            {error && <p className='text-red-400'>{error}</p>}
+            <button className='w-full rounded-lg bg-linear-to-r from-orange-500 to-amber-400 px-5 py-2 font-semibold text-slate-950'>
               {loading ? (
                 <div className='flex items-center justify-center gap-2'>
-                    <Loader2 className='w-5 h-5'/>
-                    Sending OTP to your email...
+                  <Loader2 className='h-5 w-5' />
+                  Sending OTP to your email...
                 </div>
-              ):(
+              ) : (
                 <div className='flex items-center justify-center gap-2'>
-                    Sending OTP to your email...
-                    <ArrowRight className='w-5 h-5'/>
+                  Sending OTP to your email...
+                  <ArrowRight className='h-5 w-5' />
                 </div>
               )}
-          </button>
+            </button>
           </div>
-          </form>
-        </div>
-    </div>    
+        </form>
+      </div>
+    </div>
   )
 }
 
