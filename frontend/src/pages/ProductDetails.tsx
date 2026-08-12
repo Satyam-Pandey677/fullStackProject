@@ -138,7 +138,6 @@ const ProductDetails = () => {
   useEffect(() => {
     socket.on("countdown", (t) => {
         setTimer(t);
-        console.log(t)
     })
 
   },[])
