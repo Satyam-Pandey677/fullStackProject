@@ -139,6 +139,7 @@ const ProductDetails = () => {
     socket.on("countdown", (t) => {
         setTimer(t);
     })
+    
 
   },[])
 
