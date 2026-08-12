@@ -26,7 +26,7 @@ export interface IProduct {
   };
 }
 
-// Main Products Page Component
+
 const ProductsPage = () => {
   const [searchValue, setSearchValue] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('All')
