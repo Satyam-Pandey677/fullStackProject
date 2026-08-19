@@ -10,7 +10,7 @@ import ProductDetails from "./pages/ProductDetails.tsx";
 import AdminLayout from "./pages/Admin/AdminLayout.tsx";
 import AllUsers from "./pages/Admin/AllUsers.tsx";
 import CompletedProductsPage from "./pages/CompletedProductsPage";
-import CreateProduct from "./pages/Admin/createProduct.tsx";
+import CreateProduct from "./pages/Admin/CreateProduct.tsx";
 
 function App() {
 
