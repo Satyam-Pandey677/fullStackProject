@@ -21,3 +21,12 @@ export const isAuth = async(req, res,next) => {
     }
 
 }
+
+export const isAdmin = () => {
+     if(!req.user.isAdmin){
+        return res.status(403).json({
+            message:"user not Admin"
+        })
+    }
+    next()
+}
