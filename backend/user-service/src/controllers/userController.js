@@ -63,12 +63,8 @@ export const sendOtp = async(req, res) => {
 export  const verifyOtp = async(req, res) => {
     const {otp,email} = req.body;
 
-    console.log(email)
-
-
     const storedOTp = await client.get(`otp:${email}`);
-    console.log(storedOTp)
-
+    
     if(!storedOTp || otp != storedOTp){
         return res.status(400)
         .json({
