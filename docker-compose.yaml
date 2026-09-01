@@ -2,13 +2,13 @@ services:
 
   redis:
     image: redis:latest
-    container_name: redis-container
+    container_name: redis
     ports:
       - "6379:6379"
 
   rabbitmq:
     image: rabbitmq:3-management
-    container_name: rabbitmq-container-2
+    container_name: rabbitmq-container
     ports:
       - "5672:5672"
       - "15672:15672"

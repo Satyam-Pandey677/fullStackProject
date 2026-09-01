@@ -9,7 +9,10 @@ interface ProductCardProps {
 }
 
 // Helper function to calculate time left
-const calculateTimeLeft = (endTime: string | Date): string => {
+const calculateTimeLeft = (endTime: string | Date, status: IProduct['status']): string => {
+  if (status === 'pending') return 'Pending';
+  if (status === 'ended') return 'Ended';
+
   const end = new Date(endTime).getTime();
   const now = new Date().getTime();
   const diff = end - now;
@@ -26,16 +29,16 @@ const calculateTimeLeft = (endTime: string | Date): string => {
 };
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  const [, setTimeLeft] = useState(calculateTimeLeft(product.endTime));
+  const [, setTimeLeft] = useState(calculateTimeLeft(product.endTime, product.status));
   const [winner, setWinner] = useState<any>({})
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setTimeLeft(calculateTimeLeft(product.endTime));
+      setTimeLeft(calculateTimeLeft(product.endTime, product.status));
     }, 60000); // Update every minute
 
     return () => clearInterval(timer);
-  }, [product.endTime]);
+  }, [product.endTime, product.status]);
 
   useEffect(() => {
     (async() => {
@@ -70,6 +73,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     'ended': 'bg-red-500'
   };
 
+  const statusLabel = {
+    pending: 'Pending',
+    live: 'Live',
+    ended: 'Ended'
+  };
+
   return (
     <div className="overflow-hidden rounded-2xl border border-white/10 bg-slate-900/80 shadow-[0_10px_40px_rgba(0,0,0,0.2)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_60px_rgba(15,23,42,0.35)] group cursor-pointer">
       {/* Image Container */}
@@ -80,7 +89,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
         />
         <div className={`absolute top-3 right-3 ${statusColor[product.status]} text-white px-3 py-1 rounded-full text-xs font-semibold capitalize`}>
-          {product.status}
+          {statusLabel[product.status]}
         </div>
       </div>
 
@@ -141,7 +150,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               : 'cursor-not-allowed bg-slate-700 text-slate-400'
           }`}
         >
-          {product.status === 'live' ? 'Place Bid' : `Auction ${product.status}`}
+          {product.status === 'live' ? 'Place Bid' : product.status === 'pending' ? 'Auction Pending' : 'Auction Ended'}
         </button>
       </div>
     </div>

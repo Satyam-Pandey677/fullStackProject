@@ -5,7 +5,6 @@ import ProfileButton from "./ProfileButton";
 
 const links = [
   { name: "Products", link: "/products" },
-  { name: "Completed", link: "/completed-products" },
   { name: "About", link: "about" },
 ];
 

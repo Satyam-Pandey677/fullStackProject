@@ -22,7 +22,7 @@ export const isAuth = async(req, res,next) => {
 
 }
 
-export const isAdmin = () => {
+export const isAdmin = (req, res, next) => {
      if(!req.user.isAdmin){
         return res.status(403).json({
             message:"user not Admin"

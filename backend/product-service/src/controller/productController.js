@@ -111,12 +111,17 @@ const GetAllProduct  =asyncHandler(async(req, res) => {
 
     const cache  = await client.get(cacheKey)
      if(cache){
+        console.log("entered");
+        
          return res.status(201)
               .json({
                     message:`Page ${page}`,
                     products: JSON.parse(cache)
               });
      }
+
+     console.log("exit cache");
+     
     
 
     const products = await PRODUCT
@@ -145,6 +150,8 @@ const getLiveProducts = asyncHandler(async(req, res) => {
     const products = await PRODUCT.find({
         status:"live"
     })
+
+    console.log("entered")
     
     if(!products){
         res.status(404)
@@ -246,6 +253,8 @@ const startAuction = asyncHandler(async(req, res) => {
     );
 
     await product.save()
+
+    await client.del("product:*")
     startAuctionTimer(product._id.toString(), Math.floor(product.duration / 1000))
 
     return res.status(200).json({

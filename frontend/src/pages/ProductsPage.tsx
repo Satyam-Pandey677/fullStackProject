@@ -79,7 +79,6 @@ const ProductsPage = () => {
 
       return matchesSearch && matchesCategory
     })
-    
   }, [searchValue, selectedCategory, products])
 
   return (
