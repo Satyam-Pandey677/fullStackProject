@@ -151,7 +151,6 @@ const getLiveProducts = asyncHandler(async(req, res) => {
         status:"live"
     })
 
-    console.log("entered")
     
     if(!products){
         res.status(404)
@@ -254,8 +253,12 @@ const startAuction = asyncHandler(async(req, res) => {
 
     await product.save()
 
-    await client.del("product:*")
-    startAuctionTimer(product._id.toString(), Math.floor(product.duration / 1000))
+    const keys = await client.keys("products:*");
+
+    if(keys.length){
+        await client.del(keys)
+    }
+    // startAuctionTimer(product._id.toString(), Math.floor(product.duration / 1000))
 
     return res.status(200).json({
         message:"Auction started successfully",
@@ -295,6 +298,12 @@ const endAuction = asyncHandler(async(req, res) => {
     }
 
     await product.save()
+    
+    const keys = await client.keys("products:*");
+
+    if(keys.length){
+        await client.del(keys)
+    }
 
     io.to(id).emit("auctionEnded", {
         productId: id,
