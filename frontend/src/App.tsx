@@ -10,6 +10,7 @@ import ProductDetails from "./pages/ProductDetails.tsx";
 import AdminLayout from "./pages/Admin/AdminLayout.tsx";
 import AllUsers from "./pages/Admin/AllUsers.tsx";
 import CreateProduct from "./pages/Admin/CreateProduct.tsx";
+import MyWinProducts from "./pages/user-pages/MyWinProducts.tsx";
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
       <Route path="/send-otp" element={<VerifyPage />} />
       <Route element={<AuthLayout />}>
         <Route path="/products" element={<ProductsPage />} />
+        <Route path="/my-win-products" element={<MyWinProducts />} />
         <Route path="/:id" element={<ProductDetails />} />
         <Route element={<AdminLayout />}>
           <Route path="/all-users" element={<AllUsers />} />

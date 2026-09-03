@@ -44,6 +44,7 @@ const ProfileButton: React.FC<ProfileButtonProp> = ({ name, email }) => {
       ]
     : [
         { label: 'All Products', path: '/products' },
+        { label: 'My Wins', path: '/my-win-products' },
       ]
 
   const handleLogout = async () => {

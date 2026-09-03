@@ -187,6 +187,20 @@ const getMyProducts = asyncHandler(async(req, res) => {
     })
 })
 
+const getMyWinProducts = asyncHandler(async(req, res) => {
+    const products = await PRODUCT.find({
+        status: "ended",
+        AuctionWinner: req.user._id
+    })
+    .populate("category")
+    .sort({ updatedAt: -1 })
+
+    return res.status(200).json({
+        message: "Fetched won products",
+        products
+    })
+})
+
 const getProductById = asyncHandler(async(req, res) => {
     const {id} = req.params;
 
@@ -300,7 +314,7 @@ const endAuction = asyncHandler(async(req, res) => {
 
     if(highestBid){
         product.currentBid = highestBid.amount
-        product.AuctionWinner = highestBid.bidder._id
+        product.AuctionWinner = highestBid.bidder
     }
 
     await product.save()
@@ -404,6 +418,7 @@ export {
     GetAllProduct,
     getLiveProducts,
     getMyProducts,
+    getMyWinProducts,
     startAuction,
     placeBid,
     getProductById,
