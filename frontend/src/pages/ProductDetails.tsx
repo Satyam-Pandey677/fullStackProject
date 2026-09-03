@@ -136,6 +136,17 @@ const ProductDetails = () => {
   }, [product])
   
   useEffect(() => {
+    const handleAuctionStarted = (details: { productId: string; endTime: string }) => {
+      if (details.productId !== id) return
+
+      setProduct((prev) => prev ? {
+        ...prev,
+        status: 'live',
+        endTime: details.endTime,
+      } : prev)
+      setActionMessage('Auction started successfully.')
+    }
+
     const handleAuctionEnded = (details: { productId: string; amount: number }) => {
       if (details.productId !== id) return
 
@@ -152,10 +163,12 @@ const ProductDetails = () => {
       setTimer(remaining)
     }
 
+    socket.on('auctionStarted', handleAuctionStarted)
     socket.on('auctionEnded', handleAuctionEnded)
     socket.on('countdown', handleCountdown)
 
     return () => {
+      socket.off('auctionStarted', handleAuctionStarted)
       socket.off('auctionEnded', handleAuctionEnded)
       socket.off('countdown', handleCountdown)
     }
