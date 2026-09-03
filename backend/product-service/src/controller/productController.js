@@ -258,7 +258,7 @@ const startAuction = asyncHandler(async(req, res) => {
     if(keys.length){
         await client.del(keys)
     }
-    // startAuctionTimer(product._id.toString(), Math.floor(product.duration / 1000))
+    startAuctionTimer(product._id.toString(), Math.floor(product.duration / 1000))
 
     return res.status(200).json({
         message:"Auction started successfully",

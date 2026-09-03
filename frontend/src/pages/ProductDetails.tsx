@@ -136,11 +136,30 @@ const ProductDetails = () => {
   }, [product])
   
   useEffect(() => {
-    socket.on("countdown", (t) => {
-        setTimer(t);
-    })
+    const handleAuctionEnded = (details: { productId: string; amount: number }) => {
+      if (details.productId !== id) return
 
-  },[])
+      setProduct((prev) => prev ? {
+        ...prev,
+        status: 'ended',
+        currentBid: details.amount,
+      } : prev)
+      setCurrentPrice(details.amount)
+      setActionMessage('Auction ended successfully.')
+    }
+
+    const handleCountdown = ({ remaining }: { remaining: number }) => {
+      setTimer(remaining)
+    }
+
+    socket.on('auctionEnded', handleAuctionEnded)
+    socket.on('countdown', handleCountdown)
+
+    return () => {
+      socket.off('auctionEnded', handleAuctionEnded)
+      socket.off('countdown', handleCountdown)
+    }
+  }, [id])
 
   const timeLeft = useMemo(() => {
     if (!product) return 'Loading...'
@@ -210,10 +229,7 @@ const ProductDetails = () => {
       }
 
       setProduct((prev) => prev ? { ...prev, status: 'ended' } : prev)
-
-      socket.on("auctionEnded", (details) => {
-        setActionMessage(`Auction ended successfully & Winner is ${details.winner}.`)
-      })
+      setActionMessage('Auction ended successfully.')
 
     } catch (err) {
       setActionMessage(err instanceof Error ? err.message : 'Something went wrong')
