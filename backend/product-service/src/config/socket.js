@@ -73,13 +73,12 @@ export const startAuctionTimer = (productId, seconds) => {
 
                 const highestBid = await BID.findOne({ product: productId })
                     .sort({ amount: -1 })
-                    .populate("bidder", "name email")
 
                 product.status = "ended"
 
                 if(highestBid){
                     product.currentBid = highestBid.amount
-                    product.AuctionWinner = highestBid.bidder._id
+                    product.AuctionWinner = highestBid.bidder
                 }
 
                 await product.save()

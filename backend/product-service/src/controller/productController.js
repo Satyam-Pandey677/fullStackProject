@@ -5,6 +5,7 @@ import { asyncHandler } from "../utils/asyncHandler.js"
 import {uploadOnCloudinary} from "../middleware/multer.js"
 import { publishToQueue } from "../config/rabbitmq.js";
 import { client } from "../index.js";
+import { getUserById } from "../config/userService.js";
 
 const createProduct = asyncHandler(async(req, res) =>{
 
@@ -311,6 +312,9 @@ const endAuction = asyncHandler(async(req, res) => {
         .sort({ amount: -1 })
 
     product.status = "ended"
+    const winner = highestBid
+        ? await getUserById(highestBid.bidder.toString(), req.headers.authorization)
+        : null
 
     if(highestBid){
         product.currentBid = highestBid.amount
@@ -327,7 +331,7 @@ const endAuction = asyncHandler(async(req, res) => {
 
     io.to(id).emit("auctionEnded", {
         productId: id,
-        winner: highestBid?.bidder || null,
+        winner,
         amount: highestBid?.amount || 0
     })
 

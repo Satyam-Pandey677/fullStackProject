@@ -5,7 +5,7 @@ import ProductCard from '../../components/ProductCard'
 import { PRODUCT_SERVICE } from '../../Constent'
 import type { IProduct } from '../ProductsPage'
 
-const MyWinProducts = () => {
+export default function MyWinProducts() {
   const [products, setProducts] = useState<IProduct[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -81,5 +81,3 @@ const MyWinProducts = () => {
     </main>
   )
 }
-
-export default MyWinProducts
