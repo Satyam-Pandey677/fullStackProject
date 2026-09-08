@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useState, type ReactNode }
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { USER_SERVICE } from '../Constent';
+import { USER_SERVICE } from '../Constant';
 
 
 export interface User  {

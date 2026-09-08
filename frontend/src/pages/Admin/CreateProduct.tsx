@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import { ImagePlus, PackagePlus, X } from "lucide-react";
 import Cookies from "js-cookie";
-import { PRODUCT_SERVICE } from "../../Constent";
+import { PRODUCT_SERVICE } from "../../Constant";
 
 interface Category {
   _id: string;

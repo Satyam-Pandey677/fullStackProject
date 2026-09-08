@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import Cookies from 'js-cookie'
-import { PRODUCT_SERVICE } from '../Constent'
+import { PRODUCT_SERVICE } from '../Constant'
 import { useAppData } from '../context/ContextProvider'
 import socket from '../utils/Socket'
 

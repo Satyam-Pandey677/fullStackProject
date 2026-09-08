@@ -1,5 +1,5 @@
 import axios from "axios";
-import { PRODUCT_SERVICE } from "../Constent";
+import { PRODUCT_SERVICE } from "../Constant";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 

@@ -4,7 +4,7 @@ import { ArrowRight, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import { useAppData } from '../context/ContextProvider';
-import { USER_SERVICE } from '../Constent';
+import { USER_SERVICE } from '../Constant';
 
 
 const Verify = () => {

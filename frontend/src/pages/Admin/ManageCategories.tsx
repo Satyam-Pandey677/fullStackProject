@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import Cookies from 'js-cookie'
 import { Trash2, Plus, FolderOpen } from 'lucide-react'
-import { PRODUCT_SERVICE } from '../../Constent'
+import { PRODUCT_SERVICE } from '../../Constant'
 
 interface Category {
   _id: string

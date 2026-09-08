@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from 'react'
 import SearchBar from '../components/SearchBar';
 import CategoryFilter from '../components/CategoryFilter';
 import ProductCard from '../components/ProductCard';
-import { PRODUCT_SERVICE } from '../Constent';
+import { PRODUCT_SERVICE } from '../Constant';
 import ProfileButton from '../components/ProfileButton';
 import { useAppData } from '../context/ContextProvider';
 import Cookies from 'js-cookie';

@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Navigate, useNavigate, useSearchParams, Link } from "react-router-dom";
 import Cookies from "js-cookie";
 import { useAppData } from "../context/ContextProvider";
-import { USER_SERVICE } from "../Constent";
+import { USER_SERVICE } from "../Constant";
 
 const VerfyOtp = () => {
   const [searchParams] = useSearchParams();

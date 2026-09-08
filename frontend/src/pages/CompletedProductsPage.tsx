@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Cookies from 'js-cookie'
 import ProductCard from '../components/ProductCard'
-import { PRODUCT_SERVICE } from '../Constent'
+import { PRODUCT_SERVICE } from '../Constant'
 import type { IProduct } from './ProductsPage'
 
 const CompletedProductsPage = () => {

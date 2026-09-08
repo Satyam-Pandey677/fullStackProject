@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { IProduct } from '../pages/ProductsPage';
-import { USER_SERVICE } from '../Constent';
+import { USER_SERVICE } from '../Constant';
 import Cookies from 'js-cookie';
 
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import Cookies from 'js-cookie'
-import { USER_SERVICE } from '../../Constent'
+import { USER_SERVICE } from '../../Constant'
 import { useAppData } from '../../context/ContextProvider'
 import Loading from '../../components/Loading'
 

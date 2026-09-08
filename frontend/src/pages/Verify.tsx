@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import VerfyOtp from '../components/VerfyOtp'
+import VerifyOtp from '../components/VerifyOtp'
 import Loading from '../components/Loading'
 
 const VerifyPage = () => {
@@ -7,7 +7,7 @@ const VerifyPage = () => {
     console.log("verify page")
   return (
     <Suspense fallback={<Loading/>}>
-        <VerfyOtp/>
+        <VerifyOtp/>
     </Suspense>
   )
 }
