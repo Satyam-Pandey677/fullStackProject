@@ -41,6 +41,7 @@ const ProfileButton: React.FC<ProfileButtonProp> = ({ name, email }) => {
     ? [
         { label: 'All Users', path: '/all-users' },
         { label: 'Create Product', path: '/create-product' },
+        { label: 'Manage Categories', path: '/manage-categories' },
       ]
     : [
         { label: 'All Products', path: '/products' },

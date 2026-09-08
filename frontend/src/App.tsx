@@ -10,6 +10,7 @@ import ProductDetails from "./pages/ProductDetails.tsx";
 import AdminLayout from "./pages/Admin/AdminLayout.tsx";
 import AllUsers from "./pages/Admin/AllUsers.tsx";
 import CreateProduct from "./pages/Admin/CreateProduct.tsx";
+import ManageCategories from "./pages/Admin/ManageCategories.tsx";
 import MyWinProducts from "./pages/user-pages/MyWinProducts.tsx";
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
         <Route element={<AdminLayout />}>
           <Route path="/all-users" element={<AllUsers />} />
           <Route path="/create-product" element={<CreateProduct />} />
+          <Route path="/manage-categories" element={<ManageCategories />} />
         </Route>
       </Route>
     </Routes>

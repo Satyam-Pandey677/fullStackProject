@@ -39,28 +39,29 @@ const CreateProduct = () => {
     text: string;
   } | null>(null);
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await fetch(`${PRODUCT_SERVICE}/api/categories`, {
-          headers: { Authorization: `Bearer ${Cookies.get("token")}` },
-        });
-        if (!response.ok) throw new Error("Unable to load categories.");
-        const data = await response.json();
-        setCategories(data.categories || []);
-      } catch (error) {
-        setMessage({
-          type: "error",
-          text:
-            error instanceof Error
-              ? error.message
-              : "Unable to load categories.",
-        });
-      } finally {
-        setCategoriesLoading(false);
-      }
-    };
+  const fetchCategories = async () => {
+    try {
+      setCategoriesLoading(true);
+      const response = await fetch(`${PRODUCT_SERVICE}/api/categories`, {
+        headers: { Authorization: `Bearer ${Cookies.get("token")}` },
+      });
+      if (!response.ok) throw new Error("Unable to load categories.");
+      const data = await response.json();
+      setCategories(data.categories || []);
+    } catch (error) {
+      setMessage({
+        type: "error",
+        text:
+          error instanceof Error
+            ? error.message
+            : "Unable to load categories.",
+      });
+    } finally {
+      setCategoriesLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchCategories();
   }, []);
 
