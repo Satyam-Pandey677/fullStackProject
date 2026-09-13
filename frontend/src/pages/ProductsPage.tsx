@@ -73,6 +73,11 @@ const ProductsPage = () => {
   // Filter products based on search and category
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
+
+      if(!searchValue.trim()){
+          setProducts([]);
+          return;
+      }
       const matchesSearch =
         searchValue.trim() === "" ||
         product.name.toLowerCase().includes(searchValue.toLowerCase());
