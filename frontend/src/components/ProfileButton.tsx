@@ -39,11 +39,13 @@ const ProfileButton: React.FC<ProfileButtonProp> = ({ name, email }) => {
 
   const menuItems = isAdmin
     ? [
+        { label: 'Profile', path: '/profile' },
         { label: 'All Users', path: '/all-users' },
         { label: 'Create Product', path: '/create-product' },
         { label: 'Manage Categories', path: '/manage-categories' },
       ]
     : [
+        { label: 'Profile', path: '/profile' },
         { label: 'All Products', path: '/products' },
         { label: 'My Wins', path: '/my-win-products' },
       ]
