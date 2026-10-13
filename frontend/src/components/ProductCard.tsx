@@ -14,28 +14,38 @@ const calculateTimeLeft = (endTime: string | Date, status: IProduct['status']): 
   if (status === 'ended') return 'Ended';
 
   const end = new Date(endTime).getTime();
-  const now = new Date().getTime();
+  const now = Date.now();
   const diff = end - now;
 
   if (diff <= 0) return 'Ended';
 
-  const hours = Math.floor(diff / (1000 * 60 * 60));
-  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const totalSeconds = Math.floor(diff / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
 
   if (hours > 0) {
-    return `${hours}h ${minutes}m`;
+    return `${hours}h ${minutes}m ${seconds}s`;
   }
-  return `${minutes}m`;
+  return `${minutes}m ${seconds}s`;
 };
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  const [, setTimeLeft] = useState(calculateTimeLeft(product.endTime, product.status));
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(product.endTime, product.status));
   const [winner, setWinner] = useState<any>({})
 
   useEffect(() => {
-    const timer = setInterval(() => {
+    if (product.status !== 'live') {
       setTimeLeft(calculateTimeLeft(product.endTime, product.status));
-    }, 60000); // Update every minute
+      return;
+    }
+
+    const tick = () => {
+      setTimeLeft(calculateTimeLeft(product.endTime, product.status));
+    };
+
+    tick();
+    const timer = setInterval(tick, 1000);
 
     return () => clearInterval(timer);
   }, [product.endTime, product.status]);
@@ -107,6 +117,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         )}
 
         {/* Bid Information */}
+
+        {product.status === 'live' && (
+          <div className="mb-3 flex items-center justify-between rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-200">
+            <span>Time left</span>
+            <span className="font-semibold">{timeLeft}</span>
+          </div>
+        )}
 
         {
             product.status == "ended" ? (

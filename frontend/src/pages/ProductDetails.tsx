@@ -36,19 +36,19 @@ interface IUser {
   isAdmin?: boolean
 }
 
-const calculateTimeLeft = (endTime: string | Date): string => {
-  const diff = new Date(endTime).getTime() - new Date().getTime()
+const calculateTimeLeft = (remainingMs: number): string => {
+  if (remainingMs <= 0) return 'Ended'
 
-  if (diff <= 0) return 'Ended'
-
-  const hours = Math.floor(diff / (1000 * 60 * 60))
-  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
+  const totalSeconds = Math.floor(remainingMs / 1000)
+  const hours = Math.floor(totalSeconds / 3600)
+  const minutes = Math.floor((totalSeconds % 3600) / 60)
+  const seconds = totalSeconds % 60
 
   if (hours > 0) {
-    return `${hours}h ${minutes}m`
+    return `${hours}h ${minutes}m ${seconds}s`
   }
 
-  return `${minutes}m`
+  return `${minutes}m ${seconds}s`
 }
 
 const ProductDetails = () => {
@@ -64,8 +64,7 @@ const ProductDetails = () => {
   const [currentPrice, setCurrentPrice] = useState(0)
   const [actionMessage, setActionMessage] = useState<string | null>(null)
   const [bidAmount, setBidAmount] = useState('')
-
-  const [, setTimer] = useState(0);
+  const [remainingMs, setRemainingMs] = useState<number | null>(null)
 
   const { user } = useAppData()
 
@@ -160,7 +159,7 @@ const ProductDetails = () => {
     }
 
     const handleCountdown = ({ remaining }: { remaining: number }) => {
-      setTimer(remaining)
+      setRemainingMs(remaining)
     }
 
     socket.on('auctionStarted', handleAuctionStarted)
@@ -174,10 +173,30 @@ const ProductDetails = () => {
     }
   }, [id])
 
+  useEffect(() => {
+    if (!product || product.status !== 'live' || !product.endTime) {
+      setRemainingMs(null)
+      return
+    }
+
+    const updateRemainingTime = () => {
+      const diff = new Date(product.endTime).getTime() - Date.now()
+      setRemainingMs(diff)
+    }
+
+    updateRemainingTime()
+    const intervalId = window.setInterval(updateRemainingTime, 1000)
+
+    return () => window.clearInterval(intervalId)
+  }, [product])
+
   const timeLeft = useMemo(() => {
     if (!product) return 'Loading...'
-    return calculateTimeLeft(product.endTime)
-  }, [product])
+    if (product.status === 'pending') return 'Auction pending'
+    if (product.status === 'ended') return 'Ended'
+    if (remainingMs === null) return 'Starting soon'
+    return calculateTimeLeft(remainingMs)
+  }, [product, remainingMs])
 
   const statusClasses: Record<IProduct['status'], string> = {
     pending: 'bg-amber-500/20 text-amber-300 border border-amber-400/20',
